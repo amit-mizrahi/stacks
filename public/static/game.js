@@ -1,4 +1,8 @@
 $(function() {
+
+  var ELEMENT_WIDTH = 50;
+  var ELEMENT_HEIGHT = 50;
+
   var Color = {
       RED: 1,
       GREEN: 2,
@@ -7,6 +11,19 @@ $(function() {
 
   var Element = function(color) {
     this.color = color;
+  }
+
+  Element.prototype.draw = function(ctx, x, y) {
+    if(this.color == Color.RED) {
+      ctx.fillStyle = '#FF0000';
+    }
+    else if(this.color == Color.GREEN) {
+      ctx.fillStyle = '#00FF00';
+    }
+    else if(this.color == Color.BLUE) {
+      ctx.fillStyle = '#0000FF';
+    }
+    ctx.fillRect(x, 500 - y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
@@ -87,7 +104,34 @@ $(function() {
     console.log(this.stack3.elements);
   }
 
+  GameState.prototype.drawStack = function(ctx, stack, xOffset) {
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(xOffset, 480, ELEMENT_WIDTH, 10);
+    for(var i = 0; i < stack.elements.length; i++) {
+      stack.elements[i].draw(ctx, xOffset, 70 + ELEMENT_HEIGHT*i);
+    }
+  }
+
+  GameState.prototype.draw = function() {
+    var canvas = document.getElementById("gameplay");
+    ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 1000, 1000);
+
+    // Left stack
+
+    this.drawStack(ctx, this.stack1, 50);
+
+    // Middle stack
+
+    this.drawStack(ctx, this.stack2, 150);
+
+    // Right stack
+
+    this.drawStack(ctx, this.stack3, 250);
+  }
+
   var state = new GameState();
+  state.draw();
   state.debug();
   $("body").keydown(function(e) {
     if(e.keyCode == 65) {
@@ -106,6 +150,7 @@ $(function() {
     else if(e.keyCode == 76) {
       state.popPush(state.currentStack, state.currentStack.right);
     }
+    state.draw();
     state.debug();
   });
 });
