@@ -3,6 +3,13 @@ $(function() {
   var ELEMENT_WIDTH = 50;
   var ELEMENT_HEIGHT = 50;
 
+  var CANVAS_WIDTH = 500;
+  var CANVAS_HEIGHT = 500;
+
+  var STACK_WIDTH = 50;
+  var STACK_DIST = 50;
+  var MARKER_HEIGHT = 20;
+
   var Color = {
       RED: 1,
       GREEN: 2,
@@ -23,7 +30,7 @@ $(function() {
     else if(this.color == Color.BLUE) {
       ctx.fillStyle = '#0000FF';
     }
-    ctx.fillRect(x, 500 - y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+    ctx.fillRect(x, CANVAS_WIDTH - y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
@@ -44,8 +51,6 @@ $(function() {
     // "Top" element is the last element
     // (although this is really a deque whose interface is restricted to act as a stack)
     this.elements = [];
-    this.left = null;
-    this.right = null;
   }
 
   Stack.prototype.push = function(el) {
@@ -55,7 +60,12 @@ $(function() {
 
   Stack.prototype.pop = function() {
     // Pops an item from the stack and returns it
-    return this.elements.pop();
+    if(this.elements != []) {
+      return this.elements.pop();
+    }
+    else {
+      return null;
+    }
   }
 
   Stack.prototype.randomlyFill = function() {
@@ -81,11 +91,6 @@ $(function() {
     this.stack2 = new Stack();
     this.stack3 = new Stack();
 
-    this.stack1.right = this.stack2;
-    this.stack2.right = this.stack3;
-    this.stack2.left = this.stack1;
-    this.stack3.left = this.stack2;
-
     this.currentStack = this.stack1;
 
     this.stack1.randomlyFill();
@@ -94,7 +99,10 @@ $(function() {
 
   GameState.prototype.popPush = function(sourceStack, sinkStack) {
     if(sinkStack) {
-      sinkStack.push(sourceStack.pop());
+      var popped = sourceStack.pop();
+      if(popped) {
+        sinkStack.push(popped);
+      }
     }
   }
 
@@ -104,11 +112,25 @@ $(function() {
     console.log(this.stack3.elements);
   }
 
-  GameState.prototype.drawStack = function(ctx, stack, xOffset) {
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(xOffset, 480, ELEMENT_WIDTH, 10);
-    for(var i = 0; i < stack.elements.length; i++) {
-      stack.elements[i].draw(ctx, xOffset, 70 + ELEMENT_HEIGHT*i);
+  GameState.prototype.drawStacks = function(ctx) {
+    // Draws a stack given whether the canvas context, the stack,
+    // the "x offset" of the stack, and whether the stack is selected.
+
+    var stacks = [ this.stack1, this.stack2, this.stack3 ];
+
+    for(var i = 0; i < stacks.length; i++) {
+      var stack = stacks[i];
+      if(this.currentStack == stack) {
+        ctx.fillStyle = '#777777';
+      }
+      else {
+        ctx.fillStyle = '#000000';
+      }
+      ctx.fillRect(STACK_DIST*(i+1) + STACK_WIDTH*i, CANVAS_HEIGHT - MARKER_HEIGHT, ELEMENT_WIDTH, MARKER_HEIGHT);
+
+      for(var j = 0; j < stack.elements.length; j++) {
+        stack.elements[j].draw(ctx, STACK_DIST*(i+1) + STACK_WIDTH*i, 3.5*MARKER_HEIGHT + ELEMENT_HEIGHT*j);
+      }
     }
   }
 
@@ -117,17 +139,9 @@ $(function() {
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 1000, 1000);
 
-    // Left stack
+    // Left stack, middle stack, right stack
+    this.drawStacks(ctx);
 
-    this.drawStack(ctx, this.stack1, 50);
-
-    // Middle stack
-
-    this.drawStack(ctx, this.stack2, 150);
-
-    // Right stack
-
-    this.drawStack(ctx, this.stack3, 250);
   }
 
   var state = new GameState();
@@ -145,12 +159,18 @@ $(function() {
     }
 
     else if(e.keyCode == 74) {
-      state.popPush(state.currentStack, state.currentStack.left);
+      state.popPush(state.currentStack, state.stack1);
+    }
+    else if(e.keyCode == 75) {
+      state.popPush(state.currentStack, state.stack2);
     }
     else if(e.keyCode == 76) {
-      state.popPush(state.currentStack, state.currentStack.right);
+      state.popPush(state.currentStack, state.stack3);
     }
     state.draw();
     state.debug();
   });
+
+  requestAnimationFrame(function() { state.draw() });
+
 });
