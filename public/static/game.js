@@ -10,7 +10,7 @@ $(function() {
   }
 
   var Physics = {
-    GRAVITY: 10
+    GRAVITY: 0.1
   }
 
   var Key = {
@@ -98,25 +98,38 @@ $(function() {
     // Only accessible to the game, not to the user. Adds an item to the bottom of the stack.
     var newElements = [];
     newElements.push(el);
-    for(var i = 0; i < this.elements.length; i++) {
+    for(var i = 0; i < this.size(); i++) {
       newElements.push(this.elements[i]);
     }
     this.elements = newElements;
   }
 
+  Stack.prototype.size = function() {
+    return this.elements.length;
+  }
+
   var Game = function() {
     this.stacks = [new Stack(), new Stack(), new Stack()]
-
     this.currentStack = this.stacks[0];
+    this.state = State.AT_REST;
+    this.time = 0;
+    this.motion = {
+      sourceStack: null,
+      targetStack: null,
+      startTime: null
+    };
 
     this.stacks[0].randomlyFill();
     this.stacks[1].randomlyFill();
+  }
 
-    this.state = State.AT_REST;
-
-    this.motion = {
-      sourceStack: null,
-      targetStack: null
+  Game.prototype.setupPositions = function() {
+    for(var i = 0; i < this.stacks.length; i++) {
+      for(var j = 0; j < this.stacks[i].size(); j++) {
+        var element = this.stacks[i].elements[j];
+        element.x = Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
+        element.y = 3.5*Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
+      }
     }
   }
 
@@ -141,14 +154,9 @@ $(function() {
     console.log(this.stacks[2].elements);
   }
 
-  Game.prototype.setupPositions = function() {
-    for(var i = 0; i < this.stacks.length; i++) {
-      for(var j = 0; j < this.stacks[i].elements.length; j++) {
-        var element = this.stacks[i].elements[j];
-        element.x = Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
-        element.y = 3.5*Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
-      }
-    }
+  Game.prototype.beginMotion = function() {
+      game.setState(State.IN_MOTION);
+      game.motion.startTime = game.time;
   }
 
   Game.prototype.drawStacks = function(ctx) {
@@ -169,7 +177,7 @@ $(function() {
         Geometry.ELEMENT_WIDTH,
         Geometry.MARKER_HEIGHT
       );
-      for(var j = 0; j < stack.elements.length; j++) {
+      for(var j = 0; j < stack.size(); j++) {
         stack.elements[j].draw(ctx);
       }
     }
@@ -177,26 +185,33 @@ $(function() {
 
   Game.prototype.update = function() {
 
-    function dxFlight(g, k_s, k_t) {
+    game.time += 1;
+
+    function dxFlight(source, target) {
+      var k_s = source.size();
+      var k_t = target.size();
+      var g = Physics.GRAVITY;
+      var h = Geometry.ELEMENT_HEIGHT;
+      var timeElapsed = game.time - game.motion.startTime;
       var totalFlightTime = (Math.sqrt(3*g*k_t*h) + Math.sqrt(3*g*k_t*h + 2*g*(k_s*h - k_t*h)))/g;
-      return (Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)/totalFlightTime;
+      return (Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed/totalFlightTime;
     }
 
-    function dyFlight(y) {
-      return -0.5*g + Math.sqrt(3*g*k_t*h);
+    function dyFlight(source, target) {
+      var k_t = target.size();
+      var g = Physics.GRAVITY;
+      var h = Geometry.ELEMENT_HEIGHT;
+      var timeElapsed = game.time - game.motion.startTime;
+      return -0.5*g*(timeElapsed)**2 + Math.sqrt(3*g*k_t*h)*timeElapsed;
     }
 
     if(this.state == State.IN_MOTION) {
-      var g = Physics.GRAVITY;
-      var k_s = this.motion.sourceStack.elements.length;
-      var k_t = this.motion.targetStack.elements.length;
-      var h = Geometry.ELEMENT_HEIGHT;
       var flyingElement = this.motion.sourceStack.elements[
-        this.motion.sourceStack.elements.length - 1];
+        this.motion.sourceStack.size() - 1];
       flyingElement.x =
-        flyingElement.x + dxFlight(g, k_s, k_t)
+        flyingElement.x + dxFlight(this.motion.sourceStack, this.motion.targetStack);
       flyingElement.y =
-        flyingElement.y + dyFlight(g, k_s, k_t)
+        flyingElement.y + dyFlight(this.motion.sourceStack, this.motion.targetStack);
     }
     else if(this.state == State.CANCELING_OUT) {
 
@@ -237,7 +252,7 @@ $(function() {
     if(keyPos >= 0) {
       game.motion.sourceStack = game.currentStack;
       game.motion.targetStack = game.stacks[keyPos];
-      game.setState(State.IN_MOTION);
+      game.beginMotion();
       return true;
       // game.popPush(game.motion.sourceStack, game.motion.targetStack);
     }
@@ -252,6 +267,12 @@ $(function() {
     }
   });
 
-  requestAnimationFrame(function() { game.update(); game.draw(); });
+  var gameLoop = function() {
+    game.update();
+    game.draw();
+    requestAnimationFrame(gameLoop);
+  }
+
+  requestAnimationFrame(gameLoop);
 
 });
