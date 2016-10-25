@@ -1,26 +1,46 @@
 $(function() {
 
-  var ELEMENT_WIDTH = 50;
-  var ELEMENT_HEIGHT = 50;
+  var Geometry = {
+    ELEMENT_WIDTH: 50,
+    ELEMENT_HEIGHT: 50,
+    ELEMENT_DIST: 50, // Distance between stacks
+    MARKER_HEIGHT: 20, // Height of marker underneath each stack
+    CANVAS_WIDTH: 500,
+    CANVAS_HEIGHT: 500
+  }
 
-  var CANVAS_WIDTH = 500;
-  var CANVAS_HEIGHT = 500;
+  var Physics = {
+    GRAVITY: 10
+  }
 
-  var STACK_WIDTH = 50;
-  var STACK_DIST = 50;
-  var MARKER_HEIGHT = 20;
+  var Key = {
+    LEFT_STACK_SELECT: 65,
+    MID_STACK_SELECT: 83,
+    RIGHT_STACK_SELECT: 68,
+    POP_ONTO_LEFT: 74,
+    POP_ONTO_MID: 75,
+    POP_ONTO_RIGHT: 76
+  }
 
   var Color = {
       RED: 1,
       GREEN: 2,
       BLUE: 3
-    }
+  }
+
+  var State = {
+      AT_REST: 1,
+      IN_MOTION: 2,
+      CANCELING_OUT: 3
+  }
 
   var Element = function(color) {
     this.color = color;
+    this.x = null;
+    this.y = null;
   }
 
-  Element.prototype.draw = function(ctx, x, y) {
+  Element.prototype.draw = function(ctx) {
     if(this.color == Color.RED) {
       ctx.fillStyle = '#FF0000';
     }
@@ -30,7 +50,7 @@ $(function() {
     else if(this.color == Color.BLUE) {
       ctx.fillStyle = '#0000FF';
     }
-    ctx.fillRect(x, CANVAS_WIDTH - y, ELEMENT_WIDTH, ELEMENT_HEIGHT);
+    ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
@@ -54,12 +74,10 @@ $(function() {
   }
 
   Stack.prototype.push = function(el) {
-    // Pushes an item onto the stack
     this.elements.push(el);
   }
 
   Stack.prototype.pop = function() {
-    // Pops an item from the stack and returns it
     if(this.elements != []) {
       return this.elements.pop();
     }
@@ -86,91 +104,154 @@ $(function() {
     this.elements = newElements;
   }
 
-  var GameState = function() {
-    this.stack1 = new Stack();
-    this.stack2 = new Stack();
-    this.stack3 = new Stack();
+  var Game = function() {
+    this.stacks = [new Stack(), new Stack(), new Stack()]
 
-    this.currentStack = this.stack1;
+    this.currentStack = this.stacks[0];
 
-    this.stack1.randomlyFill();
-    this.stack2.randomlyFill();
+    this.stacks[0].randomlyFill();
+    this.stacks[1].randomlyFill();
+
+    this.state = State.AT_REST;
+
+    this.motion = {
+      sourceStack: null,
+      targetStack: null
+    }
   }
 
-  GameState.prototype.popPush = function(sourceStack, sinkStack) {
-    if(sinkStack) {
+  Game.prototype.setState = function(state) {
+    if(state == State.AT_REST || state == State.IN_MOTION || state == State.CANCELING_OUT) {
+      this.state = state;
+    }
+  }
+
+  Game.prototype.popPush = function(sourceStack, targetStack) {
+    if(targetStack) {
       var popped = sourceStack.pop();
       if(popped) {
-        sinkStack.push(popped);
+        targetStack.push(popped);
       }
     }
   }
 
-  GameState.prototype.debug = function() {
-    console.log(this.stack1.elements);
-    console.log(this.stack2.elements);
-    console.log(this.stack3.elements);
+  Game.prototype.debug = function() {
+    console.log(this.stacks[0].elements);
+    console.log(this.stacks[1].elements);
+    console.log(this.stacks[2].elements);
   }
 
-  GameState.prototype.drawStacks = function(ctx) {
+  Game.prototype.setupPositions = function() {
+    for(var i = 0; i < this.stacks.length; i++) {
+      for(var j = 0; j < this.stacks[i].elements.length; j++) {
+        var element = this.stacks[i].elements[j];
+        element.x = Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
+        element.y = 3.5*Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
+      }
+    }
+  }
+
+  Game.prototype.drawStacks = function(ctx) {
     // Draws a stack given whether the canvas context, the stack,
     // the "x offset" of the stack, and whether the stack is selected.
 
-    var stacks = [ this.stack1, this.stack2, this.stack3 ];
-
-    for(var i = 0; i < stacks.length; i++) {
-      var stack = stacks[i];
+    for(var i = 0; i < this.stacks.length; i++) {
+      var stack = this.stacks[i];
       if(this.currentStack == stack) {
         ctx.fillStyle = '#777777';
       }
       else {
         ctx.fillStyle = '#000000';
       }
-      ctx.fillRect(STACK_DIST*(i+1) + STACK_WIDTH*i, CANVAS_HEIGHT - MARKER_HEIGHT, ELEMENT_WIDTH, MARKER_HEIGHT);
-
+      ctx.fillRect(
+        Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
+        Geometry.CANVAS_HEIGHT - Geometry.MARKER_HEIGHT,
+        Geometry.ELEMENT_WIDTH,
+        Geometry.MARKER_HEIGHT
+      );
       for(var j = 0; j < stack.elements.length; j++) {
-        stack.elements[j].draw(ctx, STACK_DIST*(i+1) + STACK_WIDTH*i, 3.5*MARKER_HEIGHT + ELEMENT_HEIGHT*j);
+        stack.elements[j].draw(ctx);
       }
     }
   }
 
-  GameState.prototype.draw = function() {
+  Game.prototype.update = function() {
+
+    function dxFlight(g, k_s, k_t) {
+      var totalFlightTime = (Math.sqrt(3*g*k_t*h) + Math.sqrt(3*g*k_t*h + 2*g*(k_s*h - k_t*h)))/g;
+      return (Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)/totalFlightTime;
+    }
+
+    function dyFlight(y) {
+      return -0.5*g + Math.sqrt(3*g*k_t*h);
+    }
+
+    if(this.state == State.IN_MOTION) {
+      var g = Physics.GRAVITY;
+      var k_s = this.motion.sourceStack.elements.length;
+      var k_t = this.motion.targetStack.elements.length;
+      var h = Geometry.ELEMENT_HEIGHT;
+      var flyingElement = this.motion.sourceStack.elements[
+        this.motion.sourceStack.elements.length - 1];
+      flyingElement.x =
+        flyingElement.x + dxFlight(g, k_s, k_t)
+      flyingElement.y =
+        flyingElement.y + dyFlight(g, k_s, k_t)
+    }
+    else if(this.state == State.CANCELING_OUT) {
+
+    }
+  }
+
+  Game.prototype.toBeCanceled = function() {
+    return this.stacks[0].needsCanceling ||
+    this.stacks[1].needsCanceling ||
+    this.stacks[2].needsCanceling;
+  }
+
+  Game.prototype.draw = function() {
     var canvas = document.getElementById("gameplay");
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 1000, 1000);
-
-    // Left stack, middle stack, right stack
     this.drawStacks(ctx);
-
   }
 
-  var state = new GameState();
-  state.draw();
-  state.debug();
-  $("body").keydown(function(e) {
-    if(e.keyCode == 65) {
-      state.currentStack = state.stack1;
-    }
-    else if(e.keyCode == 83) {
-      state.currentStack = state.stack2;
-    }
-    else if(e.keyCode == 68) {
-      state.currentStack = state.stack3;
-    }
+  var game = new Game();
+  game.setupPositions();
+  game.draw();
+  game.debug();
 
-    else if(e.keyCode == 74) {
-      state.popPush(state.currentStack, state.stack1);
+  var switchHandler = function(e) {
+    var keys = [Key.LEFT_STACK_SELECT, Key.MID_STACK_SELECT, Key.RIGHT_STACK_SELECT];
+    var keyPos = keys.indexOf(e.keyCode);
+    if(keyPos >= 0) {
+      game.currentStack = game.stacks[keyPos];
+      return true;
     }
-    else if(e.keyCode == 75) {
-      state.popPush(state.currentStack, state.stack2);
+    return false;
+  }
+
+  var motionHandler = function(e) {
+    var keys = [Key.POP_ONTO_LEFT, Key.POP_ONTO_MID, Key.POP_ONTO_RIGHT];
+    var keyPos = keys.indexOf(e.keyCode);
+    if(keyPos >= 0) {
+      game.motion.sourceStack = game.currentStack;
+      game.motion.targetStack = game.stacks[keyPos];
+      game.setState(State.IN_MOTION);
+      return true;
+      // game.popPush(game.motion.sourceStack, game.motion.targetStack);
     }
-    else if(e.keyCode == 76) {
-      state.popPush(state.currentStack, state.stack3);
+    return false;
+  }
+
+  $("body").keydown(function(e) {
+    var result = switchHandler(e) || motionHandler(e);
+    if(result) {
+      game.update();
+      game.draw();
     }
-    state.draw();
-    state.debug();
   });
 
-  requestAnimationFrame(function() { state.draw() });
+  requestAnimationFrame(function() { game.update(); game.draw(); });
 
 });
