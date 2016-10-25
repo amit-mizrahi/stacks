@@ -187,17 +187,20 @@ $(function() {
 
     game.time += 1;
 
-    function dxFlight(source, target) {
+    function dxFlight(stacks, source, target) {
       var k_s = source.size();
       var k_t = target.size();
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
       var timeElapsed = game.time - game.motion.startTime;
       var totalFlightTime = (Math.sqrt(3*g*k_t*h) + Math.sqrt(3*g*k_t*h + 2*g*(k_s*h - k_t*h)))/g;
-      return (Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed/totalFlightTime;
+      var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
+      return
+        (coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)
+        /totalFlightTime;
     }
 
-    function dyFlight(source, target) {
+    function dyFlight(stacks, source, target) {
       var k_t = target.size();
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
@@ -209,9 +212,9 @@ $(function() {
       var flyingElement = this.motion.sourceStack.elements[
         this.motion.sourceStack.size() - 1];
       flyingElement.x =
-        flyingElement.x + dxFlight(this.motion.sourceStack, this.motion.targetStack);
+        flyingElement.x + dxFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
       flyingElement.y =
-        flyingElement.y + dyFlight(this.motion.sourceStack, this.motion.targetStack);
+        flyingElement.y + dyFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
     }
     else if(this.state == State.CANCELING_OUT) {
 
