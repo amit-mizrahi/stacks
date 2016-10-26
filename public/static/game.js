@@ -383,7 +383,7 @@ $(function() {
     return false;
   }
 
-  var motionHandler = function(e) {
+  var motionKeyHandler = function(e) {
     var keys = [Key.POP_ONTO_LEFT, Key.POP_ONTO_MID, Key.POP_ONTO_RIGHT];
     var keyPos = keys.indexOf(e.keyCode);
     if(keyPos >= 0) {
@@ -391,7 +391,6 @@ $(function() {
       game.motion.targetStack = game.stacks[keyPos];
       game.beginMotion();
       return true;
-      // game.popPush(game.motion.sourceStack, game.motion.targetStack);
     }
     return false;
   }
@@ -402,7 +401,7 @@ $(function() {
 
   $("body").keydown(function(e) {
     if(game.state == State.AT_REST) {
-      var result = switchHandler(e) || motionHandler(e);
+      var result = switchHandler(e) || motionKeyHandler(e);
       if(result) {
         game.update();
         game.draw();
