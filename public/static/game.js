@@ -10,7 +10,8 @@ $(function() {
   }
 
   var Physics = {
-    GRAVITY: 0.1
+    GRAVITY: 0.5,
+    FLIGHT_TIME: 35
   }
 
   var Key = {
@@ -187,34 +188,41 @@ $(function() {
 
     game.time += 1;
 
-    function dxFlight(stacks, source, target) {
-      var k_s = source.size();
-      var k_t = target.size();
+    function xFlight(stacks, source, target) {
+      var s = source.size();
+      var r = target.size();
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
+      var T = Physics.FLIGHT_TIME;
       var timeElapsed = game.time - game.motion.startTime;
-      var totalFlightTime = (Math.sqrt(3*g*k_t*h) + Math.sqrt(3*g*k_t*h + 2*g*(k_s*h - k_t*h)))/g;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
-      return
-        (coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)
-        /totalFlightTime;
+      return source.elements[0].x +
+        (coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T;
     }
 
-    function dyFlight(stacks, source, target) {
-      var k_t = target.size();
+    function yFlight(stacks, source, target) {
+      var s = source.size();
+      var r = target.size();
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
+      var T = Physics.FLIGHT_TIME;
       var timeElapsed = game.time - game.motion.startTime;
-      return -0.5*g*(timeElapsed)**2 + Math.sqrt(3*g*k_t*h)*timeElapsed;
+      return source.elements[0].y +
+        -0.5*g*(timeElapsed)**2 +
+        (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed +
+        h*s;
     }
 
     if(this.state == State.IN_MOTION) {
       var flyingElement = this.motion.sourceStack.elements[
         this.motion.sourceStack.size() - 1];
-      flyingElement.x =
-        flyingElement.x + dxFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
-      flyingElement.y =
-        flyingElement.y + dyFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+      var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+      var new_y = yFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+      console.log(new_x);
+      console.log(new_y);
+      flyingElement.x = new_x;
+      flyingElement.y = new_y;
+
     }
     else if(this.state == State.CANCELING_OUT) {
 
