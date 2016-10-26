@@ -48,7 +48,8 @@ $(function() {
     }
 
   var Time = {
-    CANCELLATION_TIME: 20
+    CANCELLATION_TIME: 20,
+    RANDOM_TIME_THRESHOLD: 1e-6
   }
 
   var Element = function(color) {
@@ -168,6 +169,13 @@ $(function() {
         element.y = Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
       }
     }
+  }
+
+  Game.prototype.randomlyEnqueue = function() {
+    var r = Math.floor(Math.abs(Math.random()*3 - 0.01));
+    var randomStack = this.stacks[r];
+    randomStack.enqueue(randomElement());
+    this.setupPositions();
   }
 
   Game.prototype.setState = function(state) {
@@ -329,13 +337,19 @@ $(function() {
       var top = this.cancellation.stack.pop();
       var second = this.cancellation.stack.pop();
       this.score += determineScore(top);
-      $("#score").text(this.score);
+      updateScoreText(this.score);
       this.state = State.AT_REST;
     }
   }
 
   Game.prototype.update = function() {
     this.time++;
+
+    r = Math.random();
+    if(r < Math.sqrt((this.score+1)*Time.RANDOM_TIME_THRESHOLD)) {
+      this.randomlyEnqueue();
+      console.log(game);
+    }
 
     if(this.state == State.IN_MOTION) {
       this.motionHandler();
@@ -380,6 +394,10 @@ $(function() {
       // game.popPush(game.motion.sourceStack, game.motion.targetStack);
     }
     return false;
+  }
+
+  var updateScoreText = function(score) {
+    $("#score").text(score);
   }
 
   $("body").keydown(function(e) {
