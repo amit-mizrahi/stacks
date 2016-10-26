@@ -12,7 +12,7 @@ $(function() {
 
   var Physics = {
     GRAVITY: 0.5,
-    FLIGHT_TIME: 35
+    FLIGHT_TIME: 40
   }
 
   var Key = {
@@ -49,7 +49,7 @@ $(function() {
   }
 
   var Time = {
-    CANCELLATION_TIME: 5000
+    CANCELLATION_TIME: 20
   }
 
   var Element = function(color) {
@@ -297,7 +297,7 @@ $(function() {
 
   Game.prototype.update = function() {
 
-    game.time++;
+    this.time++;
 
     if(this.state == State.IN_MOTION) {
       this.motionHandler();
@@ -323,7 +323,7 @@ $(function() {
         this.cancellation.topBlock.color = Color.CANCEL_COLOR;
         this.cancellation.bottomBlock.color = Color.CANCEL_COLOR;
       }
-      else if(game.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
+      else if(this.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
         this.cancellation.startTime = null;
         this.cancellation.topBlock = null;
         this.cancellation.bottomBlock = null;
@@ -331,7 +331,6 @@ $(function() {
         this.cancellation.stack.pop();
         this.state = State.AT_REST;
       }
-      this.update();
     }
   }
 
