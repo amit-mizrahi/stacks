@@ -89,7 +89,7 @@ $(function() {
 
   Stack.prototype.randomlyFill = function() {
     // Fills the stack with a random number (2 < n < 10) of random elements.
-    var numElements = Math.floor((Math.random() * 12) - 2);
+    var numElements = Math.floor((Math.random() * 8) + 2);
     for(var i = 0; i < numElements; i++) {
       this.push(randomElement());
     }
@@ -120,8 +120,9 @@ $(function() {
       startTime: null
     };
 
-    this.stacks[0].randomlyFill();
-    this.stacks[1].randomlyFill();
+    for(var i = 0; i < this.stacks.length; i++) {
+      this.stacks[i].randomlyFill();
+    }
   }
 
   Game.prototype.setupPositions = function() {
