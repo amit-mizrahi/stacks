@@ -36,7 +36,7 @@ $(function() {
       BLUE: '#5595F1',
       GRAY: '#555555',
       BLACK: '#121212',
-      BROWN: '#734D26'
+      BROWN: '#333333'
   }
 
   var State = {
@@ -117,6 +117,14 @@ $(function() {
 
   Stack.prototype.size = function() {
     return this.elements.length;
+  }
+
+  Stack.prototype.peek = function() {
+    return this.elements[this.elements.length - 1];
+  }
+
+  Stack.prototype.peekTwice = function() {
+    return this.elements[this.elements.length - 2];
   }
 
   var Game = function() {
@@ -203,10 +211,7 @@ $(function() {
     }
   }
 
-  Game.prototype.update = function() {
-
-    game.time += 1;
-
+  Game.prototype.motionHandler = function() {
     function xFlight(stacks, source, target) {
       var s = source.size();
       var r = target.size();
@@ -232,26 +237,52 @@ $(function() {
         h*s;
     }
 
-    if(this.state == State.IN_MOTION) {
-      var flyingElement = this.motion.sourceStack.elements[
-        this.motion.sourceStack.size() - 1];
-      var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
-      var new_y = yFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
-      console.log(new_x);
-      console.log(new_y);
-      flyingElement.x = new_x;
-      flyingElement.y = new_y;
-
+    function isColliding(flyingElement, stackTop, dy) {
+      return Math.abs(flyingElement.x - stackTop.x) <= 1 &&
+      Math.abs(flyingElement.y - stackTop.y) <= 1 + Geometry.ELEMENT_HEIGHT &&
+      dy < 0;
     }
-    else if(this.state == State.CANCELING_OUT) {
 
+    var flyingElement = this.motion.sourceStack.peek();
+    var old_x = flyingElement.x;
+    var old_y = flyingElement.y;
+    var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+    var new_y = yFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+
+    flyingElement.x = new_x;
+    flyingElement.y = new_y;
+
+
+    // Collision detection
+
+    // Note: Checking here for downwards y-velocity to make collision detection accurate
+    // (only detect collision if moving downward, not up). This covers the edge
+    // case of popping onto the same stack.
+    var dy = new_y - old_y;
+
+    // Check whether the source and target stacks are equal
+
+    if(this.motion.sourceStack == this.motion.targetStack) {
+      stackTop = this.motion.targetStack.peekTwice();
+    }
+    else {
+      stackTop = this.motion.targetStack.peek();
+    }
+
+    if(isColliding(flyingElement, stackTop, dy)) {
+      // stop motion, set to AT_REST, push onto new stack
+      this.state = State.AT_REST;
+      this.motion.targetStack.push(this.motion.sourceStack.pop());
     }
   }
 
-  Game.prototype.toBeCanceled = function() {
-    return this.stacks[0].needsCanceling ||
-    this.stacks[1].needsCanceling ||
-    this.stacks[2].needsCanceling;
+  Game.prototype.update = function() {
+
+    game.time++;
+
+    if(this.state == State.IN_MOTION) {
+      this.motionHandler();
+    }
   }
 
   Game.prototype.draw = function() {
