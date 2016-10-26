@@ -7,15 +7,31 @@
     <script src="/static/game.js"></script>
     <style>
     .game-container {
-      width:500px;
+      width:350px;
       margin-left:auto;
       margin-right:auto;
+    }
+    #gameplay {
+      border: 1px solid #222222;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+    }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <style>
+    body {
+      font-family: "Share Tech Mono", monospace;
+    }
+    h1 {
+      text-align: center;
     }
     </style>
   </head>
   <body>
     <div class="game-container">
-      <canvas id="gameplay" width="500" height="500"></canvas>
+      <h1>Stacks</h1>
+      <canvas id="gameplay" width="350" height="500"></canvas>
     </div>
   </body>
 </html>

@@ -5,8 +5,9 @@ $(function() {
     ELEMENT_HEIGHT: 50,
     ELEMENT_DIST: 50, // Distance between stacks
     MARKER_HEIGHT: 20, // Height of marker underneath each stack
-    CANVAS_WIDTH: 500,
-    CANVAS_HEIGHT: 500
+    CANVAS_WIDTH: 350,
+    CANVAS_HEIGHT: 500,
+    GROUND_HEIGHT: 100,
   }
 
   var Physics = {
@@ -25,8 +26,17 @@ $(function() {
 
   var Color = {
       RED: 1,
-      GREEN: 2,
+      YELLOW: 2,
       BLUE: 3
+  }
+
+  var CanvasColor = {
+      RED: '#AF2001',
+      YELLOW: '#F1DE55',
+      BLUE: '#5595F1',
+      GRAY: '#555555',
+      BLACK: '#121212',
+      BROWN: '#734D26'
   }
 
   var State = {
@@ -43,13 +53,13 @@ $(function() {
 
   Element.prototype.draw = function(ctx) {
     if(this.color == Color.RED) {
-      ctx.fillStyle = '#FF0000';
+      ctx.fillStyle = CanvasColor.RED;
     }
-    else if(this.color == Color.GREEN) {
-      ctx.fillStyle = '#00FF00';
+    else if(this.color == Color.YELLOW) {
+      ctx.fillStyle = CanvasColor.YELLOW;
     }
     else if(this.color == Color.BLUE) {
-      ctx.fillStyle = '#0000FF';
+      ctx.fillStyle = CanvasColor.BLUE
     }
     ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
@@ -60,7 +70,7 @@ $(function() {
       return new Element(Color.RED);
     }
     else if(0.33 <= r && r <= 0.66) {
-      return new Element(Color.GREEN);
+      return new Element(Color.YELLOW);
     }
     else {
       return new Element(Color.BLUE);
@@ -89,7 +99,7 @@ $(function() {
 
   Stack.prototype.randomlyFill = function() {
     // Fills the stack with a random number (2 < n < 10) of random elements.
-    var numElements = Math.floor((Math.random() * 8) + 2);
+    var numElements = Math.floor((Math.random() * 5) + 2);
     for(var i = 0; i < numElements; i++) {
       this.push(randomElement());
     }
@@ -130,7 +140,7 @@ $(function() {
       for(var j = 0; j < this.stacks[i].size(); j++) {
         var element = this.stacks[i].elements[j];
         element.x = Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
-        element.y = 3.5*Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
+        element.y = Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
       }
     }
   }
@@ -165,17 +175,25 @@ $(function() {
     // Draws a stack given whether the canvas context, the stack,
     // the "x offset" of the stack, and whether the stack is selected.
 
+    ctx.fillStyle = CanvasColor.BROWN;
+    ctx.fillRect(
+      0,
+      Geometry.CANVAS_HEIGHT - Geometry.GROUND_HEIGHT,
+      Geometry.CANVAS_WIDTH,
+      Geometry.GROUND_HEIGHT
+    );
+
     for(var i = 0; i < this.stacks.length; i++) {
       var stack = this.stacks[i];
       if(this.currentStack == stack) {
-        ctx.fillStyle = '#777777';
+        ctx.fillStyle = CanvasColor.GRAY;
       }
       else {
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = CanvasColor.BLACK;
       }
       ctx.fillRect(
         Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
-        Geometry.CANVAS_HEIGHT - Geometry.MARKER_HEIGHT,
+        Geometry.CANVAS_HEIGHT - Geometry.GROUND_HEIGHT - Geometry.MARKER_HEIGHT,
         Geometry.ELEMENT_WIDTH,
         Geometry.MARKER_HEIGHT
       );
