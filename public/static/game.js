@@ -38,7 +38,7 @@ $(function() {
       GRAY: '#555555',
       BLACK: '#121212',
       BROWN: '#333333',
-      CANCEL_COLOR: '#FFFF99'
+      CANCEL_COLOR: '#FFFFCC'
   }
 
   var State = {
