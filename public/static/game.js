@@ -370,10 +370,12 @@ $(function() {
   }
 
   $("body").keydown(function(e) {
-    var result = switchHandler(e) || motionHandler(e);
-    if(result) {
-      game.update();
-      game.draw();
+    if(game.state == State.AT_REST) {
+      var result = switchHandler(e) || motionHandler(e);
+      if(result) {
+        game.update();
+        game.draw();
+      }
     }
   });
 
