@@ -28,7 +28,6 @@ $(function() {
     RED: 1,
     YELLOW: 2,
     BLUE: 3,
-    CANCEL_COLOR: 4
   }
 
   var CanvasColor = {
@@ -46,7 +45,7 @@ $(function() {
       IN_MOTION: 2,
       EVALUATING: 3,
       CANCELING: 4
-  }
+    }
 
   var Time = {
     CANCELLATION_TIME: 20
@@ -56,10 +55,14 @@ $(function() {
     this.color = color;
     this.x = null;
     this.y = null;
+    this.canceling = false;
   }
 
   Element.prototype.draw = function(ctx) {
-    if(this.color == Color.RED) {
+    if(this.canceling) {
+      ctx.fillStyle = CanvasColor.CANCEL_COLOR;
+    }
+    else if(this.color == Color.RED) {
       ctx.fillStyle = CanvasColor.RED;
     }
     else if(this.color == Color.YELLOW) {
@@ -67,9 +70,6 @@ $(function() {
     }
     else if(this.color == Color.BLUE) {
       ctx.fillStyle = CanvasColor.BLUE
-    }
-    else if(this.color == Color.CANCEL_COLOR) {
-      ctx.fillStyle = CanvasColor.CANCEL_COLOR;
     }
     ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
@@ -141,14 +141,18 @@ $(function() {
     this.stacks = [new Stack(), new Stack(), new Stack()]
     this.currentStack = this.stacks[0];
     this.state = State.AT_REST;
+
     this.time = 0;
+    this.score = 0;
+
     this.motion = {
       sourceStack: null,
       targetStack: null,
       startTime: null
     };
     this.cancellation = {
-      startTime: null
+      startTime: null,
+      stack: null
     }
 
     for(var i = 0; i < this.stacks.length; i++) {
@@ -179,12 +183,6 @@ $(function() {
         targetStack.push(popped);
       }
     }
-  }
-
-  Game.prototype.debug = function() {
-    console.log(this.stacks[0].elements);
-    console.log(this.stacks[1].elements);
-    console.log(this.stacks[2].elements);
   }
 
   Game.prototype.beginMotion = function() {
@@ -271,7 +269,6 @@ $(function() {
     flyingElement.x = new_x;
     flyingElement.y = new_y;
 
-
     // Collision detection
 
     // Note: Checking here for downwards y-velocity to make collision detection accurate
@@ -295,42 +292,59 @@ $(function() {
     }
   }
 
-  Game.prototype.update = function() {
+  Game.prototype.evalHandler = function() {
+    if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
+      this.motion.targetStack.peek().canceling = true;
+      this.motion.targetStack.peekTwice().canceling = true;
+      this.state = State.CANCELING;
+    }
+    else {
+      this.motion.sourceStack = null;
+      this.motion.targetStack = null;
+      this.state = State.AT_REST;
+    }
+  }
 
+  Game.prototype.cancelHandler = function() {
+
+    var determineScore = function(block) {
+      if(block.color == Color.RED ||
+        block.color == Color.BLUE ||
+        block.color == Color.YELLOW) {
+        return 2;
+      }
+      else {
+        return 0;
+      }
+    }
+
+    if(this.cancellation.startTime == null) {
+      this.cancellation.stack = this.motion.targetStack;
+      this.motion.sourceStack = null;
+      this.motion.targetStack = null;
+      this.cancellation.startTime = game.time;
+    }
+    else if(this.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
+      this.cancellation.startTime = null;
+      var top = this.cancellation.stack.pop();
+      var second = this.cancellation.stack.pop();
+      this.score += determineScore(top);
+      $("#score").text(this.score);
+      this.state = State.AT_REST;
+    }
+  }
+
+  Game.prototype.update = function() {
     this.time++;
 
     if(this.state == State.IN_MOTION) {
       this.motionHandler();
     }
     else if(this.state == State.EVALUATING) {
-      if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
-        this.cancellation.topBlock = this.motion.targetStack.peek();
-        this.cancellation.bottomBlock = this.motion.targetStack.peekTwice();
-        this.state = State.CANCELING;
-      }
-      else {
-        this.motion.sourceStack = null;
-        this.motion.targetStack = null;
-        this.state = State.AT_REST;
-      }
+      this.evalHandler();
     }
     else if(this.state == State.CANCELING) {
-      if(this.cancellation.startTime == null) {
-        this.cancellation.stack = this.motion.targetStack;
-        this.motion.sourceStack = null;
-        this.motion.targetStack = null;
-        this.cancellation.startTime = game.time;
-        this.cancellation.topBlock.color = Color.CANCEL_COLOR;
-        this.cancellation.bottomBlock.color = Color.CANCEL_COLOR;
-      }
-      else if(this.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
-        this.cancellation.startTime = null;
-        this.cancellation.topBlock = null;
-        this.cancellation.bottomBlock = null;
-        this.cancellation.stack.pop();
-        this.cancellation.stack.pop();
-        this.state = State.AT_REST;
-      }
+      this.cancelHandler();
     }
   }
 
@@ -344,7 +358,6 @@ $(function() {
   var game = new Game();
   game.setupPositions();
   game.draw();
-  game.debug();
 
   var switchHandler = function(e) {
     var keys = [Key.LEFT_STACK_SELECT, Key.MID_STACK_SELECT, Key.RIGHT_STACK_SELECT];
