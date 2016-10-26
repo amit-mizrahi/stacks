@@ -16,9 +16,8 @@ $(function() {
   }
 
   var Key = {
-    LEFT_STACK_SELECT: 65,
-    MID_STACK_SELECT: 83,
-    RIGHT_STACK_SELECT: 68,
+    LEFT_SELECT: 37,
+    RIGHT_SELECT: 39,
     POP_ONTO_LEFT: 74,
     POP_ONTO_MID: 75,
     POP_ONTO_RIGHT: 76
@@ -374,11 +373,20 @@ $(function() {
   game.draw();
 
   var switchHandler = function(e) {
-    var keys = [Key.LEFT_STACK_SELECT, Key.MID_STACK_SELECT, Key.RIGHT_STACK_SELECT];
-    var keyPos = keys.indexOf(e.keyCode);
-    if(keyPos >= 0) {
-      game.currentStack = game.stacks[keyPos];
-      return true;
+    var currentIndex = game.stacks.indexOf(game.currentStack);
+    if(e.keyCode == Key.LEFT_SELECT) {
+      if(currentIndex > 0) {
+        game.currentStack = game.stacks[currentIndex - 1];
+        return true;
+      }
+      return false;
+    }
+    else if(e.keyCode == Key.RIGHT_SELECT) {
+      if(currentIndex < 2) {
+        game.currentStack = game.stacks[currentIndex + 1];
+        return true;
+      }
+      return false;
     }
     return false;
   }
