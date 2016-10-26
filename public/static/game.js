@@ -25,9 +25,9 @@ $(function() {
   }
 
   var Color = {
-      RED: 1,
-      YELLOW: 2,
-      BLUE: 3
+    RED: 1,
+    YELLOW: 2,
+    BLUE: 3
   }
 
   var CanvasColor = {
@@ -42,7 +42,8 @@ $(function() {
   var State = {
       AT_REST: 1,
       IN_MOTION: 2,
-      CANCELING_OUT: 3
+      EVALUATING: 3,
+      CANCELING: 4
   }
 
   var Element = function(color) {
@@ -218,10 +219,13 @@ $(function() {
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
       var T = Physics.FLIGHT_TIME;
+
+      var theta = Math.PI*timeElapsed/T;
+
       var timeElapsed = game.time - game.motion.startTime;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
       return source.elements[0].x +
-        (coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T;
+        ((coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T);
     }
 
     function yFlight(stacks, source, target) {
@@ -230,11 +234,14 @@ $(function() {
       var g = Physics.GRAVITY;
       var h = Geometry.ELEMENT_HEIGHT;
       var T = Physics.FLIGHT_TIME;
+
+      var theta = Math.PI*timeElapsed/T;
+
       var timeElapsed = game.time - game.motion.startTime;
       return source.elements[0].y +
-        -0.5*g*(timeElapsed)**2 +
+        (-0.5*g*(timeElapsed)**2 +
         (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed +
-        h*s;
+        h*s);
     }
 
     function isColliding(flyingElement, stackTop, dy) {
@@ -271,7 +278,7 @@ $(function() {
 
     if(isColliding(flyingElement, stackTop, dy)) {
       // stop motion, set to AT_REST, push onto new stack
-      this.state = State.AT_REST;
+      this.state = State.EVALUATING;
       this.motion.targetStack.push(this.motion.sourceStack.pop());
     }
   }
@@ -282,6 +289,15 @@ $(function() {
 
     if(this.state == State.IN_MOTION) {
       this.motionHandler();
+    }
+    if(this.state == State.EVALUATING) {
+      if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
+        this.motion.targetStack.pop();
+        this.motion.targetStack.pop();
+      }
+      this.motion.sourceStack = null;
+      this.motion.targetStack = null;
+      this.state = State.CANCELING;
     }
   }
 
