@@ -27,7 +27,8 @@ $(function() {
   var Color = {
     RED: 1,
     YELLOW: 2,
-    BLUE: 3
+    BLUE: 3,
+    CANCEL_COLOR: 4
   }
 
   var CanvasColor = {
@@ -36,7 +37,8 @@ $(function() {
       BLUE: '#5595F1',
       GRAY: '#555555',
       BLACK: '#121212',
-      BROWN: '#333333'
+      BROWN: '#333333',
+      CANCEL_COLOR: '#FFFF99'
   }
 
   var State = {
@@ -44,6 +46,10 @@ $(function() {
       IN_MOTION: 2,
       EVALUATING: 3,
       CANCELING: 4
+  }
+
+  var Time = {
+    CANCELLATION_TIME: 5000
   }
 
   var Element = function(color) {
@@ -61,6 +67,9 @@ $(function() {
     }
     else if(this.color == Color.BLUE) {
       ctx.fillStyle = CanvasColor.BLUE
+    }
+    else if(this.color == Color.CANCEL_COLOR) {
+      ctx.fillStyle = CanvasColor.CANCEL_COLOR;
     }
     ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
@@ -138,6 +147,9 @@ $(function() {
       targetStack: null,
       startTime: null
     };
+    this.cancellation = {
+      startTime: null
+    }
 
     for(var i = 0; i < this.stacks.length; i++) {
       this.stacks[i].randomlyFill();
@@ -290,14 +302,36 @@ $(function() {
     if(this.state == State.IN_MOTION) {
       this.motionHandler();
     }
-    if(this.state == State.EVALUATING) {
+    else if(this.state == State.EVALUATING) {
       if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
-        this.motion.targetStack.pop();
-        this.motion.targetStack.pop();
+        this.cancellation.topBlock = this.motion.targetStack.peek();
+        this.cancellation.bottomBlock = this.motion.targetStack.peekTwice();
+        this.state = State.CANCELING;
       }
-      this.motion.sourceStack = null;
-      this.motion.targetStack = null;
-      this.state = State.CANCELING;
+      else {
+        this.motion.sourceStack = null;
+        this.motion.targetStack = null;
+        this.state = State.AT_REST;
+      }
+    }
+    else if(this.state == State.CANCELING) {
+      if(this.cancellation.startTime == null) {
+        this.cancellation.stack = this.motion.targetStack;
+        this.motion.sourceStack = null;
+        this.motion.targetStack = null;
+        this.cancellation.startTime = game.time;
+        this.cancellation.topBlock.color = Color.CANCEL_COLOR;
+        this.cancellation.bottomBlock.color = Color.CANCEL_COLOR;
+      }
+      else if(game.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
+        this.cancellation.startTime = null;
+        this.cancellation.topBlock = null;
+        this.cancellation.bottomBlock = null;
+        this.cancellation.stack.pop();
+        this.cancellation.stack.pop();
+        this.state = State.AT_REST;
+      }
+      this.update();
     }
   }
 
