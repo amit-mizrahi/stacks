@@ -18,9 +18,8 @@ $(function() {
   var Key = {
     LEFT_SELECT: 37,
     RIGHT_SELECT: 39,
-    POP_ONTO_LEFT: 74,
-    POP_ONTO_MID: 75,
-    POP_ONTO_RIGHT: 76
+    LEFT_POP: 90,
+    RIGHT_POP: 88
   }
 
   var Color = {
@@ -392,11 +391,22 @@ $(function() {
   }
 
   var motionKeyHandler = function(e) {
-    var keys = [Key.POP_ONTO_LEFT, Key.POP_ONTO_MID, Key.POP_ONTO_RIGHT];
-    var keyPos = keys.indexOf(e.keyCode);
-    if(keyPos >= 0) {
+
+    var currentIndex = game.stacks.indexOf(game.currentStack);
+    targetStack = null;
+    if(e.keyCode == Key.LEFT_POP) {
+      if(currentIndex > 0) {
+        targetStack = game.stacks[currentIndex - 1];
+      }
+    }
+    else if(e.keyCode == Key.RIGHT_POP) {
+      if(currentIndex < 2) {
+        targetStack = game.stacks[currentIndex + 1];
+      }
+    }
+    if(targetStack) {
       game.motion.sourceStack = game.currentStack;
-      game.motion.targetStack = game.stacks[keyPos];
+      game.motion.targetStack = targetStack;
       game.beginMotion();
       return true;
     }
