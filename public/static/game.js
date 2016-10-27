@@ -26,16 +26,31 @@ $(function() {
     RED: 1,
     YELLOW: 2,
     BLUE: 3,
+    GREEN: 4,
+    PURPLE: 5,
+    ORANGE: 6
+  }
+
+  var ColorScore = {
+    RED: 1,
+    BLUE: 2,
+    YELLOW: 5,
+    GREEN: 10,
+    PURPLE: 50,
+    ORANGE: 100
   }
 
   var CanvasColor = {
-      RED: '#AF2001',
-      YELLOW: '#F1DE55',
-      BLUE: '#5595F1',
-      GRAY: '#555555',
-      BLACK: '#121212',
-      BROWN: '#333333',
-      CANCEL_COLOR: '#FFFFCC'
+    RED: '#AF2001',
+    YELLOW: '#F1DE55',
+    BLUE: '#5595F1',
+    GRAY: '#555555',
+    BLACK: '#121212',
+    BROWN: '#333333',
+    CANCEL_COLOR: '#FFFFCC',
+    GREEN: '#009933',
+    PURPLE: '#4D004D',
+    ORANGE: '#FF9900'
   }
 
   var State = {
@@ -47,7 +62,7 @@ $(function() {
 
   var Time = {
     CANCELLATION_TIME: 20,
-    RANDOM_TIME_THRESHOLD: 1e-6
+    RANDOM_TIME_THRESHOLD: 1e-5
   }
 
   var Element = function(color) {
@@ -61,28 +76,52 @@ $(function() {
     if(this.canceling) {
       ctx.fillStyle = CanvasColor.CANCEL_COLOR;
     }
-    else if(this.color == Color.RED) {
-      ctx.fillStyle = CanvasColor.RED;
-    }
-    else if(this.color == Color.YELLOW) {
-      ctx.fillStyle = CanvasColor.YELLOW;
-    }
-    else if(this.color == Color.BLUE) {
-      ctx.fillStyle = CanvasColor.BLUE
+    else {
+      switch(this.color) {
+        case Color.RED:
+          ctx.fillStyle = CanvasColor.RED;
+          break;
+        case Color.YELLOW:
+          ctx.fillStyle = CanvasColor.YELLOW;
+          break;
+        case Color.BLUE:
+          ctx.fillStyle = CanvasColor.BLUE;
+          break;
+        case Color.GREEN:
+          ctx.fillStyle = CanvasColor.GREEN;
+          break;
+        case Color.PURPLE:
+          ctx.fillStyle = CanvasColor.PURPLE;
+          break;
+        case Color.ORANGE:
+          ctx.fillStyle = CanvasColor.ORANGE;
+          break;
+        default:
+          break;
+      }
     }
     ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
     var r = Math.random();
-    if(r < 0.33) {
+    if(r < 0.30) {
       return new Element(Color.RED);
     }
-    else if(0.33 <= r && r <= 0.66) {
+    else if(0.30 <= r && r <= 0.60) {
       return new Element(Color.YELLOW);
     }
-    else {
+    else if(0.60 <= r && r <= 0.90) {
       return new Element(Color.BLUE);
+    }
+    else if(0.90 <= r && r <= 0.94) {
+      return new Element(Color.PURPLE);
+    }
+    else if(0.94 <= r && r <= 0.97) {
+      return new Element(Color.GREEN);
+    }
+    else {
+      return new Element(Color.ORANGE);
     }
   }
 
@@ -260,9 +299,9 @@ $(function() {
         h*s);
     }
 
-    function isColliding(flyingElement, stackTop, dy) {
-      return Math.abs(flyingElement.x - stackTop.x) <= 1 &&
-      Math.abs(flyingElement.y - stackTop.y) <= 1 + Geometry.ELEMENT_HEIGHT &&
+    function isColliding(flyingElement, stackTopX, stackTopY, dy) {
+      return Math.abs(flyingElement.x - stackTopX) <= 1 &&
+      Math.abs(flyingElement.y - stackTopY) <= 1 + Geometry.ELEMENT_HEIGHT &&
       dy < 0;
     }
 
@@ -291,7 +330,17 @@ $(function() {
       stackTop = this.motion.targetStack.peek();
     }
 
-    if(isColliding(flyingElement, stackTop, dy)) {
+    if(stackTop) {
+      stackTopX = stackTop.x;
+      stackTopY = stackTop.y;
+    }
+    else {
+      var stackIndex = this.stacks.indexOf(this.motion.targetStack);
+      stackTopY = Geometry.MARKER_HEIGHT;
+      stackTopX = Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
+    }
+
+    if(isColliding(flyingElement, stackTopX, stackTopY, dy)) {
       // stop motion, set to AT_REST, push onto new stack
       this.state = State.EVALUATING;
       this.motion.targetStack.push(this.motion.sourceStack.pop());
@@ -299,15 +348,17 @@ $(function() {
   }
 
   Game.prototype.evalHandler = function() {
-    if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
-      this.motion.targetStack.peek().canceling = true;
-      this.motion.targetStack.peekTwice().canceling = true;
-      this.state = State.CANCELING;
-    }
-    else {
-      this.motion.sourceStack = null;
-      this.motion.targetStack = null;
-      this.state = State.AT_REST;
+    if(this.motion.targetStack.peekTwice()) {
+      if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
+        this.motion.targetStack.peek().canceling = true;
+        this.motion.targetStack.peekTwice().canceling = true;
+        this.state = State.CANCELING;
+      }
+      else {
+        this.motion.sourceStack = null;
+        this.motion.targetStack = null;
+        this.state = State.AT_REST;
+      }
     }
   }
 
@@ -343,13 +394,13 @@ $(function() {
   Game.prototype.update = function() {
     this.time++;
 
-    r = Math.random();
-    if(r < Math.sqrt((this.score+1)*Time.RANDOM_TIME_THRESHOLD)) {
-      this.randomlyEnqueue();
-      console.log(game);
+    if(this.state == State.AT_REST) {
+      r = Math.random();
+      if(r < Math.sqrt((this.score+1)*Time.RANDOM_TIME_THRESHOLD)) {
+        this.randomlyEnqueue();
+      }
     }
-
-    if(this.state == State.IN_MOTION) {
+    else if(this.state == State.IN_MOTION) {
       this.motionHandler();
     }
     else if(this.state == State.EVALUATING) {
