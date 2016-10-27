@@ -8,6 +8,7 @@ $(function() {
     CANVAS_WIDTH: 350,
     CANVAS_HEIGHT: 500,
     GROUND_HEIGHT: 100,
+    STACK_HEIGHT_THRESHOLD: 7 // Max height of any stack before losing game
   }
 
   var Physics = {
@@ -182,6 +183,7 @@ $(function() {
 
     this.time = 0;
     this.score = 0;
+    this.lost = false;
 
     this.motion = {
       sourceStack: null,
@@ -218,15 +220,6 @@ $(function() {
   Game.prototype.setState = function(state) {
     if(state == State.AT_REST || state == State.IN_MOTION || state == State.CANCELING_OUT) {
       this.state = state;
-    }
-  }
-
-  Game.prototype.popPush = function(sourceStack, targetStack) {
-    if(targetStack) {
-      var popped = sourceStack.pop();
-      if(popped) {
-        targetStack.push(popped);
-      }
     }
   }
 
@@ -344,6 +337,9 @@ $(function() {
       // stop motion, set to AT_REST, push onto new stack
       this.state = State.EVALUATING;
       this.motion.targetStack.push(this.motion.sourceStack.pop());
+      if(this.losing()) {
+        this.gameOver();
+      }
     }
   }
 
@@ -391,6 +387,26 @@ $(function() {
     }
   }
 
+  Game.prototype.losing = function() {
+    var result = false;
+    for(var i = 0; i < this.stacks.length; i++) {
+      result = result || this.stacks[i].size() > Geometry.STACK_HEIGHT_THRESHOLD;
+    }
+    return result;
+  }
+
+  Game.prototype.gameOver = function() {
+    this.lost = true;
+  }
+
+  Game.prototype.showGameOverMessage = function() {
+    ctx.clearRect(0, 0, 1000, 1000);
+    ctx.font = "16px Share Tech Mono";
+    ctx.fillStyle = '#222222';
+    ctx.fillText("Game over!", 70, 250);
+    ctx.fillText("Press ENTER to play again.", 70, 280);
+  }
+
   Game.prototype.update = function() {
     this.time++;
 
@@ -398,6 +414,9 @@ $(function() {
       r = Math.random();
       if(r < Math.sqrt((this.score+1)*Time.RANDOM_TIME_THRESHOLD)) {
         this.randomlyEnqueue();
+        if(this.losing()) {
+          this.gameOver();
+        }
       }
     }
     else if(this.state == State.IN_MOTION) {
@@ -479,9 +498,14 @@ $(function() {
   });
 
   var gameLoop = function() {
-    game.update();
-    game.draw();
-    requestAnimationFrame(gameLoop);
+    if(!game.lost) {
+      game.update();
+      game.draw();
+      requestAnimationFrame(gameLoop);
+    }
+    else {
+      game.showGameOverMessage();
+    }
   }
 
   requestAnimationFrame(gameLoop);
