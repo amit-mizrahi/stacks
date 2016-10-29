@@ -20,7 +20,8 @@ $(function() {
     LEFT_SELECT: 37,
     RIGHT_SELECT: 39,
     LEFT_POP: 90,
-    RIGHT_POP: 88
+    RIGHT_POP: 88,
+    ENTER: 13
   }
 
   var Color = {
@@ -274,7 +275,10 @@ $(function() {
 
       var timeElapsed = _this.time - _this.motion.startTime;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
-      return source.elements[0].x +
+      var stackIndex = stacks.indexOf(source);
+      var stackX = Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
+
+      return stackX +
         ((coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T);
     }
 
@@ -288,10 +292,8 @@ $(function() {
       var theta = Math.PI*timeElapsed/T;
 
       var timeElapsed = _this.time - _this.motion.startTime;
-      return source.elements[0].y +
-        (-0.5*g*(timeElapsed)**2 +
-        (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed +
-        h*s);
+
+      return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed + h*s;
     }
 
     function isColliding(flyingElement, stackTopX, stackTopY, dy) {
@@ -448,6 +450,14 @@ $(function() {
 
   var newGame = function() {
 
+    var makeNewGame = function(e) {
+      if(e.keyCode == Key.ENTER) {
+        newGame();
+      }
+    }
+
+    $("body").unbind("keydown", makeNewGame);
+
     var game = new Game();
     game.setupPositions();
     game.draw();
@@ -460,11 +470,7 @@ $(function() {
       }
       else {
         game.showGameOverMessage();
-        $("body").keydown(function(e) {
-          if(e.keyCode == 13) {
-            newGame();
-          }
-        });
+        $("body").keydown(makeNewGame);
       }
     }
 
