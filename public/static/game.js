@@ -271,8 +271,6 @@ $(function() {
       var h = Geometry.ELEMENT_HEIGHT;
       var T = Physics.FLIGHT_TIME;
 
-      var theta = Math.PI*timeElapsed/T;
-
       var timeElapsed = _this.time - _this.motion.startTime;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
       var stackIndex = stacks.indexOf(source);
@@ -289,11 +287,10 @@ $(function() {
       var h = Geometry.ELEMENT_HEIGHT;
       var T = Physics.FLIGHT_TIME;
 
-      var theta = Math.PI*timeElapsed/T;
-
       var timeElapsed = _this.time - _this.motion.startTime;
 
-      return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed + h*s;
+      return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.MARKER_HEIGHT + (h*s))/T +
+        (Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + h*s);
     }
 
     function isColliding(flyingElement, stackTopX, stackTopY, dy) {
@@ -368,7 +365,16 @@ $(function() {
       if(block.color == Color.RED ||
         block.color == Color.BLUE ||
         block.color == Color.YELLOW) {
-        return 2;
+        return 200;
+      }
+      else if(block.color == Color.GREEN) {
+        return 500;
+      }
+      else if(block.color == Color.PURPLE) {
+        return 1000;
+      }
+      else if(block.color == Color.ORANGE) {
+        return 2000;
       }
       else {
         return 0;
@@ -388,8 +394,8 @@ $(function() {
       if(this.losing()) {
         this.gameOver();
       }
-      this.score += determineScore(top);
-      updateScoreText(this.score);
+      this.score = (1 + this.score)*Math.log(this.score + determineScore(top));
+      updateScoreText(parseInt(this.score));
       this.state = State.AT_REST;
     }
   }
