@@ -224,8 +224,8 @@ $(function() {
   }
 
   Game.prototype.beginMotion = function() {
-      game.setState(State.IN_MOTION);
-      game.motion.startTime = game.time;
+      this.setState(State.IN_MOTION);
+      this.motion.startTime = this.time;
   }
 
   Game.prototype.drawStacks = function(ctx) {
@@ -261,6 +261,8 @@ $(function() {
   }
 
   Game.prototype.motionHandler = function() {
+    var _this = this;
+
     function xFlight(stacks, source, target) {
       var s = source.size();
       var r = target.size();
@@ -270,7 +272,7 @@ $(function() {
 
       var theta = Math.PI*timeElapsed/T;
 
-      var timeElapsed = game.time - game.motion.startTime;
+      var timeElapsed = _this.time - _this.motion.startTime;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
       return source.elements[0].x +
         ((coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T);
@@ -285,7 +287,7 @@ $(function() {
 
       var theta = Math.PI*timeElapsed/T;
 
-      var timeElapsed = game.time - game.motion.startTime;
+      var timeElapsed = _this.time - _this.motion.startTime;
       return source.elements[0].y +
         (-0.5*g*(timeElapsed)**2 +
         (0.5*g*T - (h*s)/T + (h*r)/T)*timeElapsed +
@@ -375,7 +377,7 @@ $(function() {
       this.cancellation.stack = this.motion.targetStack;
       this.motion.sourceStack = null;
       this.motion.targetStack = null;
-      this.cancellation.startTime = game.time;
+      this.cancellation.startTime = this.time;
     }
     else if(this.time - this.cancellation.startTime == Time.CANCELLATION_TIME) {
       this.cancellation.startTime = null;
@@ -437,77 +439,86 @@ $(function() {
     this.drawStacks(ctx);
   }
 
-  var game = new Game();
-  game.setupPositions();
-  game.draw();
-
-  var switchHandler = function(e) {
-    var currentIndex = game.stacks.indexOf(game.currentStack);
-    if(e.keyCode == Key.LEFT_SELECT) {
-      if(currentIndex > 0) {
-        game.currentStack = game.stacks[currentIndex - 1];
-        return true;
-      }
-      return false;
-    }
-    else if(e.keyCode == Key.RIGHT_SELECT) {
-      if(currentIndex < 2) {
-        game.currentStack = game.stacks[currentIndex + 1];
-        return true;
-      }
-      return false;
-    }
-    return false;
-  }
-
-  var motionKeyHandler = function(e) {
-
-    var currentIndex = game.stacks.indexOf(game.currentStack);
-    targetStack = null;
-    if(e.keyCode == Key.LEFT_POP) {
-      if(currentIndex > 0) {
-        targetStack = game.stacks[currentIndex - 1];
-      }
-    }
-    else if(e.keyCode == Key.RIGHT_POP) {
-      if(currentIndex < 2) {
-        targetStack = game.stacks[currentIndex + 1];
-      }
-    }
-    if(targetStack) {
-      game.motion.sourceStack = game.currentStack;
-      game.motion.targetStack = targetStack;
-      game.beginMotion();
-      return true;
-    }
-    return false;
-  }
-
   var updateScoreText = function(score) {
     $("#score").text(score);
   }
 
-  $("body").keydown(function(e) {
-    if(game.state == State.AT_REST) {
-      var result = switchHandler(e) || motionKeyHandler(e);
-      if(result) {
+  var newGame = function() {
+
+    var game = new Game();
+    game.setupPositions();
+    game.draw();
+
+    var gameLoop = function() {
+      if(!game.lost) {
         game.update();
         game.draw();
+        requestAnimationFrame(gameLoop);
+      }
+      else {
+        game.showGameOverMessage();
+        $("body").keydown(function(e) {
+          if(e.keyCode == 13) {
+            newGame();
+          }
+        });
       }
     }
-  });
 
-  var gameLoop = function() {
-    if(!game.lost) {
-      game.update();
-      game.draw();
-      requestAnimationFrame(gameLoop);
+    var switchHandler = function(e) {
+      var currentIndex = game.stacks.indexOf(game.currentStack);
+      if(e.keyCode == Key.LEFT_SELECT) {
+        if(currentIndex > 0) {
+          game.currentStack = game.stacks[currentIndex - 1];
+          return true;
+        }
+        return false;
+      }
+      else if(e.keyCode == Key.RIGHT_SELECT) {
+        if(currentIndex < 2) {
+          game.currentStack = game.stacks[currentIndex + 1];
+          return true;
+        }
+        return false;
+      }
+      return false;
     }
-    else {
-      game.showGameOverMessage();
+
+    var motionKeyHandler = function(e) {
+      var currentIndex = game.stacks.indexOf(game.currentStack);
+      targetStack = null;
+      if(e.keyCode == Key.LEFT_POP) {
+        if(currentIndex > 0) {
+          targetStack = game.stacks[currentIndex - 1];
+        }
+      }
+      else if(e.keyCode == Key.RIGHT_POP) {
+        if(currentIndex < 2) {
+          targetStack = game.stacks[currentIndex + 1];
+        }
+      }
+      if(targetStack) {
+        game.motion.sourceStack = game.currentStack;
+        game.motion.targetStack = targetStack;
+        game.beginMotion();
+        return true;
+      }
+      return false;
     }
+
+    $("body").keydown(function(e) {
+      if(game.state == State.AT_REST) {
+        var result = switchHandler(e) || motionKeyHandler(e);
+        if(result) {
+          game.update();
+          game.draw();
+        }
+      }
+    });
+
+    requestAnimationFrame(gameLoop);
   }
 
-  requestAnimationFrame(gameLoop);
+  newGame();
 
 });
