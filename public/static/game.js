@@ -339,9 +339,6 @@ $(function() {
       // stop motion, set to AT_REST, push onto new stack
       this.state = State.EVALUATING;
       this.motion.targetStack.push(this.motion.sourceStack.pop());
-      if(this.losing()) {
-        this.gameOver();
-      }
     }
   }
 
@@ -356,6 +353,9 @@ $(function() {
         this.motion.sourceStack = null;
         this.motion.targetStack = null;
         this.state = State.AT_REST;
+        if(this.losing()) {
+          this.gameOver();
+        }
       }
     }
   }
@@ -383,6 +383,9 @@ $(function() {
       this.cancellation.startTime = null;
       var top = this.cancellation.stack.pop();
       var second = this.cancellation.stack.pop();
+      if(this.losing()) {
+        this.gameOver();
+      }
       this.score += determineScore(top);
       updateScoreText(this.score);
       this.state = State.AT_REST;
@@ -507,8 +510,9 @@ $(function() {
     }
 
     $("body").keydown(function(e) {
+      var result = switchHandler(e);
       if(game.state == State.AT_REST) {
-        var result = switchHandler(e) || motionKeyHandler(e);
+        result = result || motionKeyHandler(e);
         if(result) {
           game.update();
           game.draw();
