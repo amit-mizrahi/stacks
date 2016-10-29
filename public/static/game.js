@@ -151,7 +151,14 @@ $(function() {
     // Fills the stack with a random number (2 < n < 10) of random elements.
     var numElements = Math.floor((Math.random() * 5) + 2);
     for(var i = 0; i < numElements; i++) {
-      this.push(randomElement());
+      var element = randomElement();
+      if(i > 0) {
+        // Don't allow two of the same color to be randomly generated
+        while(element.color == this.elements[i-1].color) {
+          element = randomElement();
+        }
+      }
+      this.push(element);
     }
   }
 
@@ -300,6 +307,7 @@ $(function() {
     }
 
     var flyingElement = this.motion.sourceStack.peek();
+  
     var old_x = flyingElement.x;
     var old_y = flyingElement.y;
     var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
@@ -447,6 +455,8 @@ $(function() {
     var canvas = document.getElementById("gameplay");
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 1000, 1000);
+    ctx.fillStyle = 'rgba(200, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, Geometry.CANVAS_WIDTH, 10);
     this.drawStacks(ctx);
   }
 
@@ -529,8 +539,11 @@ $(function() {
       if(targetStack) {
         game.motion.sourceStack = game.currentStack;
         game.motion.targetStack = targetStack;
-        game.beginMotion();
-        return true;
+        if(game.motion.sourceStack.peek()) {
+          game.beginMotion();
+          return true;
+        }
+        return false;
       }
       return false;
     }
