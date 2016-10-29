@@ -221,7 +221,13 @@ $(function() {
   Game.prototype.randomlyEnqueue = function() {
     var r = Math.floor(Math.abs(Math.random()*3 - 0.01));
     var randomStack = this.stacks[r];
-    randomStack.enqueue(randomElement());
+    var element = randomElement();
+    if(randomStack.elements[0]) {
+      while(element.color == randomStack.elements[0].color) {
+        element = randomElement();
+      }
+    }
+    randomStack.enqueue(element);
     this.setupPositions();
   }
 
@@ -307,7 +313,7 @@ $(function() {
     }
 
     var flyingElement = this.motion.sourceStack.peek();
-  
+
     var old_x = flyingElement.x;
     var old_y = flyingElement.y;
     var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
@@ -401,7 +407,7 @@ $(function() {
       if(this.losing()) {
         this.gameOver();
       }
-      this.score = (1 + this.score)*Math.log(this.score + determineScore(top));
+      this.score = this.score + determineScore(top);
       updateScoreText(parseInt(this.score));
       this.state = State.AT_REST;
     }
@@ -433,7 +439,7 @@ $(function() {
 
     if(this.state == State.AT_REST) {
       r = Math.random();
-      if(r < Math.sqrt((this.score+1)*Time.RANDOM_TIME_THRESHOLD)) {
+      if(r < Math.sqrt(((this.score+1)/10.)*Time.RANDOM_TIME_THRESHOLD)) {
         this.randomlyEnqueue();
         if(this.losing()) {
           this.gameOver();
