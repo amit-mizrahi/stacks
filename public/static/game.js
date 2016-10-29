@@ -295,8 +295,8 @@ $(function() {
 
     function isColliding(flyingElement, stackTopX, stackTopY, dy) {
       return Math.abs(flyingElement.x - stackTopX) <= 1 &&
-      Math.abs(flyingElement.y - stackTopY) <= 1 + Geometry.ELEMENT_HEIGHT &&
-      dy < 0;
+        Math.abs(flyingElement.y - stackTopY) <= 1 + Geometry.ELEMENT_HEIGHT &&
+        dy < 0;
     }
 
     var flyingElement = this.motion.sourceStack.peek();
@@ -335,7 +335,7 @@ $(function() {
     }
 
     if(isColliding(flyingElement, stackTopX, stackTopY, dy)) {
-      // stop motion, set to AT_REST, push onto new stack
+      // stop motion, set to EVALUATING, push onto new stack
       this.state = State.EVALUATING;
       this.motion.targetStack.push(this.motion.sourceStack.pop());
     }
@@ -343,19 +343,18 @@ $(function() {
 
   Game.prototype.evalHandler = function() {
     if(this.motion.targetStack.peekTwice()) {
+      // We've popped onto a nonempty stack. Check to see if colors cancel
       if(this.motion.targetStack.peek().color == this.motion.targetStack.peekTwice().color) {
         this.motion.targetStack.peek().canceling = true;
         this.motion.targetStack.peekTwice().canceling = true;
-        this.state = State.CANCELING;
+        return this.state = State.CANCELING;
       }
-      else {
-        this.motion.sourceStack = null;
-        this.motion.targetStack = null;
-        this.state = State.AT_REST;
-        if(this.losing()) {
-          this.gameOver();
-        }
-      }
+    }
+    this.motion.sourceStack = null;
+    this.motion.targetStack = null;
+    this.state = State.AT_REST;
+    if(this.losing()) {
+      this.gameOver();
     }
   }
 
@@ -413,7 +412,8 @@ $(function() {
   }
 
   Game.prototype.showGameOverMessage = function() {
-    ctx.clearRect(0, 0, 1000, 1000);
+    ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
+    ctx.fillRect(0, 0, 1000, 1000);
     ctx.font = "16px Share Tech Mono";
     ctx.fillStyle = '#222222';
     ctx.fillText("Game over!", 70, 250);
@@ -456,17 +456,30 @@ $(function() {
 
   var newGame = function() {
 
+    var game = new Game();
+    game.setupPositions();
+    game.draw();
+    updateScoreText(0);
+
     var makeNewGame = function(e) {
       if(e.keyCode == Key.ENTER) {
         newGame();
       }
     }
 
-    $("body").unbind("keydown", makeNewGame);
+    var keyHandler = function(e) {
+      var result = switchHandler(e);
+      if(game.state == State.AT_REST) {
+        result = result || motionKeyHandler(e);
+        if(result) {
+          game.update();
+          game.draw();
+        }
+      }
+    }
 
-    var game = new Game();
-    game.setupPositions();
-    game.draw();
+    $("body").unbind("keydown", makeNewGame);
+    $("body").keydown(keyHandler);
 
     var gameLoop = function() {
       if(!game.lost) {
@@ -475,6 +488,7 @@ $(function() {
         requestAnimationFrame(gameLoop);
       }
       else {
+        $("body").unbind("keydown", keyHandler);
         game.showGameOverMessage();
         $("body").keydown(makeNewGame);
       }
@@ -520,17 +534,6 @@ $(function() {
       }
       return false;
     }
-
-    $("body").keydown(function(e) {
-      var result = switchHandler(e);
-      if(game.state == State.AT_REST) {
-        result = result || motionKeyHandler(e);
-        if(result) {
-          game.update();
-          game.draw();
-        }
-      }
-    });
 
     requestAnimationFrame(gameLoop);
   }
