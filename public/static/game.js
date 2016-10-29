@@ -436,6 +436,10 @@ $(function() {
 
   Game.prototype.update = function() {
     this.time++;
+    if(this.time % 10 == 0) {
+        this.score++;
+        updateScoreText(this.score);
+    }
 
     if(this.state == State.AT_REST) {
       r = Math.random();
