@@ -1,27 +1,5 @@
 $(function() {
 
-  var bodyWidth = $("body").width();
-  var bodyHeight = $("body").height();
-
-  var Geometry = {
-    ELEMENT_WIDTH: bodyWidth/15.0,
-    ELEMENT_HEIGHT: bodyHeight/12.0,
-    ELEMENT_DIST: bodyWidth/15.0, // Distance between stacks
-    ELEMENT_OFFSET: bodyWidth/3.7,
-    MARKER_HEIGHT: bodyHeight/15.0, // Height of marker underneath each stack
-    CANVAS_WIDTH: bodyWidth,
-    CANVAS_HEIGHT: bodyHeight,
-    GROUND_HEIGHT: bodyHeight/5.0,
-  }
-
-  Geometry.STACK_HEIGHT_THRESHOLD = (Geometry.CANVAS_HEIGHT -
-    (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT))/(Geometry.ELEMENT_HEIGHT)
-
-  var Physics = {
-    GRAVITY: 9e-4*Geometry.CANVAS_HEIGHT,
-    FLIGHT_TIME: 40
-  }
-
   var Key = {
     LEFT_SELECT: 37,
     RIGHT_SELECT: 39,
@@ -314,8 +292,8 @@ $(function() {
 
       var timeElapsed = _this.time - _this.motion.startTime;
 
-      return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.MARKER_HEIGHT + (h*s))/T +
-        (Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + h*s) + 200;
+      return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*s))/T +
+        (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + Geometry.GROUND_HEIGHT + h*s);
     }
 
     function isColliding(flyingElement, stackTopX, stackTopY, dy) {
@@ -573,10 +551,41 @@ $(function() {
     requestAnimationFrame(gameLoop);
   }
 
+  var bodyWidth = $("body").width();
+  var bodyHeight = $("body").height();
+
+  function setupGeometry(bodyWidth, bodyHeight) {
+    var geom = {
+      ELEMENT_WIDTH: bodyWidth/15.0,
+      ELEMENT_HEIGHT: bodyHeight/8.0,
+      ELEMENT_DIST: bodyWidth/15.0, // Distance between stacks
+      ELEMENT_OFFSET: bodyWidth/3.7,
+      MARKER_HEIGHT: bodyHeight/15.0, // Height of marker underneath each stack
+      CANVAS_WIDTH: bodyWidth,
+      CANVAS_HEIGHT: bodyHeight,
+      GROUND_HEIGHT: bodyHeight/5.0,
+    };
+    geom.STACK_HEIGHT_THRESHOLD = (geom.CANVAS_HEIGHT -
+      (geom.GROUND_HEIGHT + geom.MARKER_HEIGHT))/(geom.ELEMENT_HEIGHT);
+    return geom;
+  }
+
+  function setupPhysics(geom) {
+    var phys = {
+      GRAVITY: 9e-4*geom.CANVAS_HEIGHT,
+      FLIGHT_TIME: 40
+    };
+    return phys;
+  }
+
+  var Geometry = setupGeometry(bodyWidth, bodyHeight);
+  var Physics = setupPhysics(Geometry);
   $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
   $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
   $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
   $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
+
+
   newGame();
 
 });
