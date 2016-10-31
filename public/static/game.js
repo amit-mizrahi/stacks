@@ -137,7 +137,7 @@ $(function() {
 
   Stack.prototype.randomlyFill = function() {
     // Fills the stack with a random number (2 < n < 10) of random elements.
-    var numElements = Math.floor((Math.random() * 5) + 2);
+    var numElements = Math.abs(Math.floor((Math.random() * (Geometry.STACK_HEIGHT_THRESHOLD)) - 2));
     for(var i = 0; i < numElements; i++) {
       var element = randomElement();
       if(i > 0) {
@@ -591,6 +591,7 @@ $(function() {
   }
 
   adjustWindow();
+  newGame();
 
   $(window).resize(function() {
     adjustWindow();
