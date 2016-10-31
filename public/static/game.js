@@ -71,6 +71,10 @@ $(function() {
     RANDOM_TIME_THRESHOLD: 1e-5
   }
 
+  function fillRect(ctx, x, y, width, height) {
+    ctx.fillRect(x, y, width, height);
+  }
+
   var Element = function(color) {
     this.color = color;
     this.x = null;
@@ -106,7 +110,7 @@ $(function() {
           break;
       }
     }
-    ctx.fillRect(this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
+    fillRect(ctx, this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
@@ -251,7 +255,8 @@ $(function() {
     // the "x offset" of the stack, and whether the stack is selected.
 
     ctx.fillStyle = CanvasColor.BROWN;
-    ctx.fillRect(
+    fillRect(
+      ctx,
       0,
       0,
       Geometry.CANVAS_WIDTH,
@@ -266,7 +271,8 @@ $(function() {
       else {
         ctx.fillStyle = CanvasColor.BLACK;
       }
-      ctx.fillRect(
+      fillRect(
+        ctx,
         Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
         Geometry.GROUND_HEIGHT,
         Geometry.ELEMENT_WIDTH,
@@ -431,7 +437,7 @@ $(function() {
 
   Game.prototype.showGameOverMessage = function() {
     ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
-    ctx.fillRect(0, 0, 1000, 1000);
+    fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     ctx.font = "16px Share Tech Mono";
     ctx.fillStyle = '#222222';
     ctx.fillText("Game over!", 70, 250);
@@ -470,7 +476,7 @@ $(function() {
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     ctx.fillStyle = 'rgba(200, 0, 0, 0.5)';
-    ctx.fillRect(0, Geometry.CANVAS_HEIGHT - 10, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+    fillRect(ctx, 0, Geometry.CANVAS_HEIGHT - 10, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     this.drawStacks(ctx);
   }
 
@@ -567,6 +573,8 @@ $(function() {
 
   $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
   $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
+  $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
+  $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
   newGame();
 
 });
