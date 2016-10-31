@@ -16,7 +16,7 @@ $(function() {
   }
 
   var Physics = {
-    GRAVITY: 0.5,
+    GRAVITY: 9e-4*Geometry.CANVAS_HEIGHT,
     FLIGHT_TIME: 40
   }
 
@@ -72,7 +72,7 @@ $(function() {
   }
 
   function fillRect(ctx, x, y, width, height) {
-    ctx.fillRect(x, y, width, height);
+    ctx.fillRect(x, Geometry.CANVAS_HEIGHT - y, width, -1 * height);
   }
 
   var Element = function(color) {
