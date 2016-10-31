@@ -578,14 +578,22 @@ $(function() {
     return phys;
   }
 
-  var Geometry = setupGeometry(bodyWidth, bodyHeight);
-  var Physics = setupPhysics(Geometry);
-  $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
-  $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
-  $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
-  $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
+  var Geometry = {};
+  var Physics = {};
 
+  var adjustWindow = function() {
+    Geometry = setupGeometry(bodyWidth, bodyHeight);
+    Physics = setupPhysics(Geometry);
+    $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
+    $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
+    $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
+    $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
+  }
 
-  newGame();
+  adjustWindow();
+
+  $(window).resize(function() {
+    adjustWindow();
+  });
 
 });
