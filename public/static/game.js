@@ -5,15 +5,17 @@ $(function() {
 
   var Geometry = {
     ELEMENT_WIDTH: bodyWidth/15.0,
-    ELEMENT_HEIGHT: bodyHeight/8.0,
+    ELEMENT_HEIGHT: bodyHeight/12.0,
     ELEMENT_DIST: bodyWidth/15.0, // Distance between stacks
     ELEMENT_OFFSET: bodyWidth/3.7,
     MARKER_HEIGHT: bodyHeight/15.0, // Height of marker underneath each stack
     CANVAS_WIDTH: bodyWidth,
     CANVAS_HEIGHT: bodyHeight,
     GROUND_HEIGHT: bodyHeight/5.0,
-    STACK_HEIGHT_THRESHOLD: 7 // Max height of any stack before losing game
   }
+
+  Geometry.STACK_HEIGHT_THRESHOLD = (Geometry.CANVAS_HEIGHT -
+    (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT))/(Geometry.ELEMENT_HEIGHT)
 
   var Physics = {
     GRAVITY: 9e-4*Geometry.CANVAS_HEIGHT,
