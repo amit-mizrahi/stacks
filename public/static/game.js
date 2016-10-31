@@ -1,13 +1,17 @@
 $(function() {
 
+  var bodyWidth = $("body").width();
+  var bodyHeight = $("body").height();
+
   var Geometry = {
-    ELEMENT_WIDTH: 50,
-    ELEMENT_HEIGHT: 50,
-    ELEMENT_DIST: 50, // Distance between stacks
-    MARKER_HEIGHT: 20, // Height of marker underneath each stack
-    CANVAS_WIDTH: 350,
-    CANVAS_HEIGHT: 500,
-    GROUND_HEIGHT: 100,
+    ELEMENT_WIDTH: bodyWidth/15.0,
+    ELEMENT_HEIGHT: bodyHeight/8.0,
+    ELEMENT_DIST: bodyWidth/15.0, // Distance between stacks
+    ELEMENT_OFFSET: bodyWidth/3.7,
+    MARKER_HEIGHT: bodyHeight/15.0, // Height of marker underneath each stack
+    CANVAS_WIDTH: bodyWidth,
+    CANVAS_HEIGHT: bodyHeight,
+    GROUND_HEIGHT: bodyHeight/5.0,
     STACK_HEIGHT_THRESHOLD: 7 // Max height of any stack before losing game
   }
 
@@ -102,7 +106,7 @@ $(function() {
           break;
       }
     }
-    ctx.fillRect(this.x, Geometry.CANVAS_WIDTH - this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
+    ctx.fillRect(this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
 
   var randomElement = function() {
@@ -212,8 +216,8 @@ $(function() {
     for(var i = 0; i < this.stacks.length; i++) {
       for(var j = 0; j < this.stacks[i].size(); j++) {
         var element = this.stacks[i].elements[j];
-        element.x = Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
-        element.y = Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
+        element.x = Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i;
+        element.y = Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + Geometry.ELEMENT_HEIGHT*j;
       }
     }
   }
@@ -249,7 +253,7 @@ $(function() {
     ctx.fillStyle = CanvasColor.BROWN;
     ctx.fillRect(
       0,
-      Geometry.CANVAS_HEIGHT - Geometry.GROUND_HEIGHT,
+      0,
       Geometry.CANVAS_WIDTH,
       Geometry.GROUND_HEIGHT
     );
@@ -263,8 +267,8 @@ $(function() {
         ctx.fillStyle = CanvasColor.BLACK;
       }
       ctx.fillRect(
-        Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
-        Geometry.CANVAS_HEIGHT - Geometry.GROUND_HEIGHT - Geometry.MARKER_HEIGHT,
+        Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
+        Geometry.GROUND_HEIGHT,
         Geometry.ELEMENT_WIDTH,
         Geometry.MARKER_HEIGHT
       );
@@ -287,7 +291,7 @@ $(function() {
       var timeElapsed = _this.time - _this.motion.startTime;
       var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
       var stackIndex = stacks.indexOf(source);
-      var stackX = Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
+      var stackX = Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
 
       return stackX +
         ((coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T);
@@ -303,7 +307,7 @@ $(function() {
       var timeElapsed = _this.time - _this.motion.startTime;
 
       return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.MARKER_HEIGHT + (h*s))/T +
-        (Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + h*s);
+        (Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + h*s) + 200;
     }
 
     function isColliding(flyingElement, stackTopX, stackTopY, dy) {
@@ -464,9 +468,9 @@ $(function() {
   Game.prototype.draw = function() {
     var canvas = document.getElementById("gameplay");
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 1000, 1000);
+    ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     ctx.fillStyle = 'rgba(200, 0, 0, 0.5)';
-    ctx.fillRect(0, 0, Geometry.CANVAS_WIDTH, 10);
+    ctx.fillRect(0, Geometry.CANVAS_HEIGHT - 10, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     this.drawStacks(ctx);
   }
 
@@ -561,6 +565,8 @@ $(function() {
     requestAnimationFrame(gameLoop);
   }
 
+  $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
+  $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
   newGame();
 
 });

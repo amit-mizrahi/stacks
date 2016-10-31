@@ -7,15 +7,9 @@
     <script src="/static/game.js"></script>
     <style>
     .game-container {
-      width:350px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    #gameplay {
-      border: 1px solid #222222;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 5px;
-      border-radius: 5px;
+      position:absolute;
+      top:0;
+      left:0
     }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
@@ -40,8 +34,7 @@
   </head>
   <body>
     <div class="game-container">
-      <h1>Stacks</h1>
-      <canvas id="gameplay" width="350" height="450"></canvas>
+      <canvas id="gameplay" width="1" height="1"></canvas>
       <p>Score: <span id="score">0</span> &middot; <a href="#">Help</a>
     </div>
   </body>
