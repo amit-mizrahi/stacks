@@ -334,8 +334,8 @@ $(function() {
     }
     else {
       var stackIndex = this.stacks.indexOf(this.motion.targetStack);
-      stackTopY = Geometry.MARKER_HEIGHT;
-      stackTopX = Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
+      stackTopY = Geometry.MARKER_HEIGHT + Geometry.GROUND_HEIGHT;
+      stackTopX = Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
     }
 
     if(isColliding(flyingElement, stackTopX, stackTopY, dy)) {
@@ -418,10 +418,11 @@ $(function() {
   Game.prototype.showGameOverMessage = function() {
     ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
     fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-    ctx.font = "16px Share Tech Mono";
+    ctx.font = Math.floor((Geometry.CANVAS_HEIGHT)/25)+"px Share Tech Mono";
     ctx.fillStyle = '#222222';
-    ctx.fillText("Game over!", 70, 250);
-    ctx.fillText("Press ENTER to play again.", 70, 280);
+    ctx.fillText("Game over!", Geometry.CANVAS_WIDTH*3, Geometry.CANVAS_HEIGHT*2./3);
+    ctx.fillText("Press ENTER to play again.", Geometry.CANVAS_WIDTH*6,
+      (Geometry.CANVAS_HEIGHT*2./3 - (Geometry.CANVAS_HEIGHT)/25));
   }
 
   Game.prototype.update = function() {
@@ -481,11 +482,8 @@ $(function() {
       var result = switchHandler(e);
       if(game.state == State.AT_REST) {
         result = result || motionKeyHandler(e);
-        if(result) {
-          game.update();
-          game.draw();
-        }
       }
+      return result;
     }
 
     $("body").unbind("keydown", makeNewGame);
