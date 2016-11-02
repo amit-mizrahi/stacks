@@ -1,10 +1,10 @@
 $(function() {
 
   var Key = {
-    LEFT_SELECT: 37,
-    RIGHT_SELECT: 39,
-    LEFT_POP: 90,
-    RIGHT_POP: 88,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
     ENTER: 13
   }
 
@@ -48,7 +48,45 @@ $(function() {
 
   var Time = {
     CANCELLATION_TIME: 20,
-    RANDOM_TIME_THRESHOLD: 1e-5
+    RANDOM_TIME_THRESHOLD: 1e-3
+  }
+
+  var KeyMap = function() {
+    this.vals = [false, false, false, false];
+  }
+
+  KeyMap.prototype.get = function(keyCode) {
+    switch(keyCode) {
+      case Key.LEFT:
+        return this.vals[0];
+      case Key.UP:
+        return this.vals[1];
+      case Key.RIGHT:
+        return this.vals[2];
+      case Key.DOWN:
+        return this.vals[3];
+      default:
+        break;
+    }
+  }
+
+  KeyMap.prototype.set = function(keyCode) {
+    switch (keyCode) {
+      case Key.LEFT:
+        this.vals[0] = true;
+        break;
+      case Key.UP:
+        this.vals[1] = true;
+        break;
+      case Key.RIGHT:
+        this.vals[2] = true;
+        break;
+      case Key.DOWN:
+        this.vals[3] = true;
+        break;
+      default:
+        break;
+    }
   }
 
   function fillRect(ctx, x, y, width, height) {
@@ -137,7 +175,7 @@ $(function() {
 
   Stack.prototype.randomlyFill = function() {
     // Fills the stack with a random number (2 < n < 10) of random elements.
-    var numElements = Math.abs(Math.floor((Math.random() * (Geometry.STACK_HEIGHT_THRESHOLD)) - 2));
+    var numElements = Math.abs(Math.floor((Math.random() * (Geometry.STACK_HEIGHT_THRESHOLD)) - 2)) + 2;
     for(var i = 0; i < numElements; i++) {
       var element = randomElement();
       if(i > 0) {
@@ -364,7 +402,7 @@ $(function() {
 
   Game.prototype.cancelHandler = function() {
 
-    var determineScore = function(block) {
+    var determineScoreOfBlock = function(block) {
       if(block.color == Color.RED ||
         block.color == Color.BLUE ||
         block.color == Color.YELLOW) {
@@ -397,7 +435,7 @@ $(function() {
       if(this.losing()) {
         this.gameOver();
       }
-      this.score = this.score + determineScore(top);
+      this.score = this.score + determineScoreOfBlock(top);
       updateScoreText(parseInt(this.score));
       this.state = State.AT_REST;
     }
@@ -434,7 +472,7 @@ $(function() {
 
     if(this.state == State.AT_REST) {
       r = Math.random();
-      if(r < Math.sqrt(((this.score+1)/10.)*Time.RANDOM_TIME_THRESHOLD)) {
+      if(r < Math.pow(this.time, 1./5)*Time.RANDOM_TIME_THRESHOLD) {
         this.randomlyEnqueue();
         if(this.losing()) {
           this.gameOver();
@@ -478,17 +516,6 @@ $(function() {
       }
     }
 
-    var keyHandler = function(e) {
-      var result = switchHandler(e);
-      if(game.state == State.AT_REST) {
-        result = result || motionKeyHandler(e);
-      }
-      return result;
-    }
-
-    $("body").unbind("keydown", makeNewGame);
-    $("body").keydown(keyHandler);
-
     var gameLoop = function() {
       if(!game.lost) {
         game.update();
@@ -496,42 +523,40 @@ $(function() {
         requestAnimationFrame(gameLoop);
       }
       else {
-        $("body").unbind("keydown", keyHandler);
+        $("body").unbind("keyup", keyUpHandler);
+        $("body").unbind("keydown", keyDownHandler);
         game.showGameOverMessage();
         $("body").keydown(makeNewGame);
       }
     }
 
-    var switchHandler = function(e) {
-      var currentIndex = game.stacks.indexOf(game.currentStack);
-      if(e.keyCode == Key.LEFT_SELECT) {
-        if(currentIndex > 0) {
-          game.currentStack = game.stacks[currentIndex - 1];
-          return true;
-        }
-        return false;
-      }
-      else if(e.keyCode == Key.RIGHT_SELECT) {
-        if(currentIndex < 2) {
-          game.currentStack = game.stacks[currentIndex + 1];
-          return true;
-        }
-        return false;
-      }
-      return false;
+    var keyMap = new KeyMap();
+
+    var keyDownHandler = function(e) {
+      keyMap.set(e.keyCode);
     }
 
-    var motionKeyHandler = function(e) {
+    var keyUpHandler = function() {
       var currentIndex = game.stacks.indexOf(game.currentStack);
       targetStack = null;
-      if(e.keyCode == Key.LEFT_POP) {
+      if(keyMap.get(Key.LEFT)) {
         if(currentIndex > 0) {
-          targetStack = game.stacks[currentIndex - 1];
+          if(keyMap.get(Key.UP) && game.state == State.AT_REST) {
+            targetStack = game.stacks[currentIndex - 1];
+          }
+          else {
+            game.currentStack = game.stacks[currentIndex - 1];
+          }
         }
       }
-      else if(e.keyCode == Key.RIGHT_POP) {
+      else if(keyMap.get(Key.RIGHT)) {
         if(currentIndex < 2) {
-          targetStack = game.stacks[currentIndex + 1];
+          if(keyMap.get(Key.UP) && game.state == State.AT_REST) {
+            targetStack = game.stacks[currentIndex + 1];
+          }
+          else {
+            game.currentStack = game.stacks[currentIndex + 1];
+          }
         }
       }
       if(targetStack) {
@@ -539,12 +564,14 @@ $(function() {
         game.motion.targetStack = targetStack;
         if(game.motion.sourceStack.peek()) {
           game.beginMotion();
-          return true;
         }
-        return false;
       }
-      return false;
+      keyMap = new KeyMap();
     }
+
+    $("body").unbind("keydown", makeNewGame);
+    $("body").keydown(keyDownHandler);
+    $("body").keyup(keyUpHandler);
 
     requestAnimationFrame(gameLoop);
   }
