@@ -6,10 +6,36 @@
     <script src="/static/jquery.js"></script>
     <script src="/static/game.js"></script>
     <style>
-    .game-container {
+    #title, #game-over-heading, #game-over-text {
+      z-index:1000;
       position:absolute;
+    }
+    #title {
+      position: absolute;
+      top:0%;
+      left:2%;
+    }
+    #game-over-heading {
+      top:20%;
+      font-size:36px;
+      width:100%;
+    }
+    #game-over-text {
+      top:40%;
+      font-size:36px;
+      width:100%;
+    }
+    #gameplay {
+      position: absolute;
       top:0;
-      left:0
+      left:0;
+      z-index:0;
+    }
+    #score-container {
+      position:absolute;
+      width:98%;
+      top:90%;
+      text-align: right;
     }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
@@ -17,7 +43,7 @@
     body {
       font-family: "Share Tech Mono", monospace;
     }
-    h1 {
+    h1, h4, h5 {
       text-align: center;
     }
     a {
@@ -26,7 +52,7 @@
     p {
       text-align:right;
     }
-    #score {
+    .score-display {
       font-weight:bold;
       font-size:18px;
     }
@@ -34,8 +60,11 @@
   </head>
   <body>
     <div class="game-container">
+      <h1 id="title">Stacks</h1>
+      <h4 id="game-over-heading" style="display:none;">Game over! You scored <span id="score"></span>.</h4>
+      <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
       <canvas id="gameplay" width="1" height="1"></canvas>
-      <p>Score: <span id="score">0</span> &middot; <a href="#">Help</a>
+      <p id="score-container">Score: <span class="score-display" id="score">0</span> &middot; <a href="#">Help</a>
     </div>
   </body>
 </html>

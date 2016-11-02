@@ -216,6 +216,7 @@ $(function() {
     this.state = State.AT_REST;
 
     this.time = 0;
+    this.lastEnqueued = 0;
     this.score = 0;
     this.lost = false;
 
@@ -454,13 +455,11 @@ $(function() {
   }
 
   Game.prototype.showGameOverMessage = function() {
+    $("#title").hide();
     ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
     fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-    ctx.font = Math.floor((Geometry.CANVAS_HEIGHT)/25)+"px Share Tech Mono";
-    ctx.fillStyle = '#222222';
-    ctx.fillText("Game over!", Geometry.CANVAS_WIDTH*3, Geometry.CANVAS_HEIGHT*2./3);
-    ctx.fillText("Press ENTER to play again.", Geometry.CANVAS_WIDTH*6,
-      (Geometry.CANVAS_HEIGHT*2./3 - (Geometry.CANVAS_HEIGHT)/25));
+    $("#game-over-heading").show();
+    $("#game-over-text").show();
   }
 
   Game.prototype.update = function() {
@@ -472,8 +471,10 @@ $(function() {
 
     if(this.state == State.AT_REST) {
       r = Math.random();
-      if(r < Math.pow(this.time, 1./5)*Time.RANDOM_TIME_THRESHOLD) {
+      if(r < this.time*Time.RANDOM_TIME_THRESHOLD &&
+          this.time - this.lastEnqueued > 100) {
         this.randomlyEnqueue();
+        this.lastEnqueued = this.time;
         if(this.losing()) {
           this.gameOver();
         }
@@ -509,6 +510,9 @@ $(function() {
     game.setupPositions();
     game.draw();
     updateScoreText(0);
+    $("#title").show();
+    $("#game-over-heading").hide();
+    $("#game-over-text").hide();
 
     var makeNewGame = function(e) {
       if(e.keyCode == Key.ENTER) {
@@ -577,7 +581,7 @@ $(function() {
   }
 
   var bodyWidth = $("body").width();
-  var bodyHeight = $("body").height();
+  var bodyHeight = $("body").height()*0.9;
 
   function setupGeometry(bodyWidth, bodyHeight) {
     var geom = {
@@ -617,9 +621,5 @@ $(function() {
 
   adjustWindow();
   newGame();
-
-  $(window).resize(function() {
-    adjustWindow();
-  });
 
 });
