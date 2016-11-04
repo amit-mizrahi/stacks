@@ -3,8 +3,8 @@ $(function() {
   var Key = {
     LEFT_SELECT: 37,
     RIGHT_SELECT: 39,
-    LEFT_POP: 90,
-    RIGHT_POP: 88,
+    LEFT_POP: 65,
+    RIGHT_POP: 68,
     ENTER: 13
   }
 
@@ -48,7 +48,9 @@ $(function() {
 
   var Time = {
     CANCELLATION_TIME: 20,
-    RANDOM_TIME_THRESHOLD: 1e-5
+    RANDOM_TIME_THRESHOLD: 1e-3,
+    MIN_TIME: 100,
+    MINIMUM_MIN_TIME: 10
   }
 
   function fillRect(ctx, x, y, width, height) {
@@ -434,7 +436,13 @@ $(function() {
     if(this.state == State.AT_REST) {
       r = Math.random();
       if(r < this.time*Time.RANDOM_TIME_THRESHOLD &&
-          this.time - this.lastEnqueued > 100) {
+          this.time - this.lastEnqueued > Time.MIN_TIME) {
+        // Decrease minimum time between enqueueings
+
+        if(Time.MIN_TIME > Time.MINIMUM_MIN_TIME) {
+          Time.MIN_TIME -= 1;
+        }
+
         this.randomlyEnqueue();
         this.lastEnqueued = this.time;
         if(this.losing()) {
@@ -463,7 +471,7 @@ $(function() {
   }
 
   var updateScoreText = function(score) {
-    $("#score").text(score);
+    $(".score-display").text(score);
   }
 
   var newGame = function() {
@@ -553,8 +561,11 @@ $(function() {
     requestAnimationFrame(gameLoop);
   }
 
-  var bodyWidth = $("body").width();
-  var bodyHeight = $("body").height()*0.9;
+  var SMALLEST_HEIGHT = 400;
+
+  var bodyWidth = Math.max($("body").width(),
+    SMALLEST_HEIGHT*($("body").width()/$("body").height()));
+  var bodyHeight = Math.max($("body").height()*0.9, SMALLEST_HEIGHT);
 
   function setupGeometry(bodyWidth, bodyHeight) {
     var geom = {

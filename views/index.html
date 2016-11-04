@@ -52,7 +52,7 @@
     p {
       text-align:right;
     }
-    .score-display {
+    #bottom-score {
       font-weight:bold;
       font-size:18px;
     }
@@ -61,10 +61,10 @@
   <body>
     <div class="game-container">
       <h1 id="title">Stacks</h1>
-      <h4 id="game-over-heading" style="display:none;">Game over! You scored <span id="score"></span>.</h4>
+      <h4 id="game-over-heading" style="display:none;">Game over! You scored <span class="score-display"></span>.</h4>
       <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
       <canvas id="gameplay" width="1" height="1"></canvas>
-      <p id="score-container">Score: <span class="score-display" id="score">0</span> &middot; <a href="#">Help</a>
+      <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#">Help</a>
     </div>
   </body>
 </html>
