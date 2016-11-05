@@ -38,11 +38,11 @@ var CanvasColor = {
 }
 
 var State = {
-    AT_REST: 1,
-    IN_MOTION: 2,
-    EVALUATING: 3,
-    CANCELING: 4
-  }
+  AT_REST: 1,
+  IN_MOTION: 2,
+  EVALUATING: 3,
+  CANCELING: 4
+}
 
 var Time = {
   CANCELLATION_TIME: 20,
@@ -79,15 +79,17 @@ function setupPhysics(geom) {
 var Geometry = {};
 var Physics = {};
 
-var adjustWindow = function() {
-  var SMALLEST_HEIGHT = 400;
-  var bodyWidth = Math.max($("body").width(),
-    SMALLEST_HEIGHT*($("body").width()/$("body").height()));
-  var bodyHeight = Math.max($("body").height()*0.9, SMALLEST_HEIGHT);
-  Geometry = setupGeometry(bodyWidth, bodyHeight);
-  Physics = setupPhysics(Geometry);
-  $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
-  $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
-  $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
-  $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
+var Config = {
+  adjustWindow: function() {
+    var SMALLEST_HEIGHT = 400;
+    var bodyWidth = Math.max($("body").width(),
+      SMALLEST_HEIGHT*($("body").width()/$("body").height()));
+    var bodyHeight = Math.max($("body").height()*0.9, SMALLEST_HEIGHT);
+    Geometry = setupGeometry(bodyWidth, bodyHeight);
+    Physics = setupPhysics(Geometry);
+    $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
+    $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
+    $("#gameplay").css("width", Geometry.CANVAS_WIDTH);
+    $("#gameplay").css("height", Geometry.CANVAS_HEIGHT);
+  }
 }

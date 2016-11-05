@@ -1,3 +1,5 @@
+// requires Stack.js, Config.js, DOM.js
+
 var Game = function() {
   this.stacks = [new Stack(), new Stack(), new Stack()]
   this.currentStack = this.stacks[0];
@@ -63,7 +65,7 @@ Game.prototype.drawStacks = function() {
   // the "x offset" of the stack, and whether the stack is selected.
 
   this.ctx.fillStyle = CanvasColor.BROWN;
-  fillRect(
+  DOM.fillRect(
     this.ctx,
     0,
     0,
@@ -79,7 +81,7 @@ Game.prototype.drawStacks = function() {
     else {
       this.ctx.fillStyle = CanvasColor.BLACK;
     }
-    fillRect(
+    DOM.fillRect(
       this.ctx,
       Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
       Geometry.GROUND_HEIGHT,
@@ -170,7 +172,7 @@ Game.prototype.cancelHandler = function() {
       this.gameOver();
     }
     this.score = this.score + determineScore(top);
-    updateScoreText(parseInt(this.score));
+    DOM.updateScoreText(parseInt(this.score));
     this.state = State.AT_REST;
   }
 }
@@ -185,19 +187,36 @@ Game.prototype.losing = function() {
 
 Game.prototype.gameOver = function() {
   this.lost = true;
-  $("#title").hide();
-  $("#explanation").hide();
   this.ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
-  fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-  $("#game-over-heading").show();
-  $("#game-over-text").show();
+  DOM.fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+  DOM.showGameOverText(); // from DOM.js
+}
+
+Game.prototype.determineScore = function(block) {
+  if(block.color == Color.RED ||
+    block.color == Color.BLUE ||
+    block.color == Color.YELLOW) {
+    return 200;
+  }
+  else if(block.color == Color.GREEN) {
+    return 500;
+  }
+  else if(block.color == Color.PURPLE) {
+    return 1000;
+  }
+  else if(block.color == Color.ORANGE) {
+    return 2000;
+  }
+  else {
+    return 0;
+  }
 }
 
 Game.prototype.update = function() {
   this.time++;
   if(this.time % 10 == 0) {
       this.score++;
-      updateScoreText(this.score);
+      DOM.updateScoreText(this.score);
   }
 
   if(this.state == State.AT_REST) {
@@ -231,10 +250,10 @@ Game.prototype.update = function() {
 Game.prototype.draw = function() {
   this.ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
   this.ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
-  fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
+  DOM.fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
     Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
   this.ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
-  fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
+  DOM.fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
     Geometry.CEILING_HEIGHT);
   this.drawStacks(this.ctx);
 }

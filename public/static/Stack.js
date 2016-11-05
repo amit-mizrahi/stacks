@@ -1,3 +1,5 @@
+// requires Config.js, Element.js
+
 var Stack = function() {
   // Represents a stack of elements as a list
   // "Top" element is the last element
@@ -18,15 +20,19 @@ Stack.prototype.pop = function() {
   }
 }
 
+Stack.prototype.randomElement = function() {
+
+}
+
 Stack.prototype.randomlyFill = function() {
   // Fills the stack with a random number (2 < n < 10) of random elements.
   var numElements = Math.abs(Math.floor((Math.random() * (Geometry.STACK_HEIGHT_THRESHOLD)) - 2));
   for(var i = 0; i < numElements; i++) {
-    var element = randomElement();
+    var element = this.randomElement();
     if(i > 0) {
       // Don't allow two of the same color to be randomly generated
       while(element.color == this.elements[i-1].color) {
-        element = randomElement();
+        element = this.randomElement();
       }
     }
     this.push(element);

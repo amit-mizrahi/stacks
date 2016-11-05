@@ -1,3 +1,5 @@
+// requires Config.js, DOM.js
+
 var Element = function(color) {
   this.color = color;
   this.x = null;
@@ -33,5 +35,5 @@ Element.prototype.draw = function(ctx) {
         break;
     }
   }
-  fillRect(ctx, this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
+  DOM.fillRect(ctx, this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
 }

@@ -1,3 +1,5 @@
+// requires Game.js, DOM.js, Config.js
+
 var newGame = function() {
 
   window.game = new Game();
@@ -7,11 +9,9 @@ var newGame = function() {
 
   game.setupPositions();
   game.draw();
-  Time.MIN_TIME = 50;
-  updateScoreText(0);
-  $("#title").show();
-  $("#game-over-heading").hide();
-  $("#game-over-text").hide();
+
+  DOM.updateScoreText(0);
+  DOM.hideGameOverText();
 
   var makeNewGame = function(e) {
     if(e.keyCode == Key.ENTER) {
@@ -90,6 +90,6 @@ var newGame = function() {
 }
 
 $(function() {
-  adjustWindow(); // from Config
+  Config.adjustWindow();
   newGame();
 })
