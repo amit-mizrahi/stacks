@@ -27,16 +27,16 @@ $(function() {
   }
 
   var CanvasColor = {
-    RED: '#AF2001',
-    YELLOW: '#F1DE55',
-    BLUE: '#5595F1',
+    RED: '#F17777',
+    YELLOW: '#F1DD77',
+    BLUE: '#527B9B',
     GRAY: '#555555',
     BLACK: '#121212',
     BROWN: '#333333',
     CANCEL_COLOR: '#FFFFCC',
-    GREEN: '#009933',
-    PURPLE: '#4D004D',
-    ORANGE: '#FF9900'
+    GREEN: '#5AB66F',
+    PURPLE: '#90519F',
+    ORANGE: '#F1AD78'
   }
 
   var State = {
@@ -465,8 +465,12 @@ $(function() {
     var canvas = document.getElementById("gameplay");
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-    ctx.fillStyle = 'rgba(200, 0, 0, 0.5)';
-    fillRect(ctx, 0, Geometry.CANVAS_HEIGHT - 10, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+    ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
+    fillRect(ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
+      Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+    ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
+    fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
+      Geometry.CEILING_HEIGHT);
     this.drawStacks(ctx);
   }
 
@@ -474,11 +478,14 @@ $(function() {
     $(".score-display").text(score);
   }
 
+  var game;
+
   var newGame = function() {
 
-    var game = new Game();
+    game = new Game();
     game.setupPositions();
     game.draw();
+    Time.MIN_TIME = 50;
     updateScoreText(0);
     $("#title").show();
     $("#game-over-heading").hide();
@@ -576,10 +583,11 @@ $(function() {
       MARKER_HEIGHT: bodyHeight/15.0, // Height of marker underneath each stack
       CANVAS_WIDTH: bodyWidth,
       CANVAS_HEIGHT: bodyHeight,
-      GROUND_HEIGHT: bodyHeight/5.0,
+      GROUND_HEIGHT: bodyHeight/8.0,
+      CEILING_HEIGHT: bodyHeight/15.0
     };
     geom.STACK_HEIGHT_THRESHOLD = (geom.CANVAS_HEIGHT -
-      (geom.GROUND_HEIGHT + geom.MARKER_HEIGHT))/(geom.ELEMENT_HEIGHT);
+      (geom.GROUND_HEIGHT + geom.MARKER_HEIGHT + geom.CEILING_HEIGHT))/(geom.ELEMENT_HEIGHT);
     return geom;
   }
 

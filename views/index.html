@@ -6,24 +6,24 @@
     <script src="/static/jquery.js"></script>
     <script src="/static/game.js"></script>
     <style>
-    #title, #game-over-heading, #game-over-text {
+    body {
+      color:#333333;
+    }
+    #title, .game-over-container {
       z-index:1000;
-      position:absolute;
     }
     #title {
       position: absolute;
-      top:0%;
+      top:5%;
       left:2%;
+      font-size:48px;
     }
-    #game-over-heading {
+    .game-over-container {
       top:20%;
       font-size:36px;
-      width:100%;
-    }
-    #game-over-text {
-      top:40%;
-      font-size:36px;
-      width:100%;
+      margin-left:auto;
+      margin-right:auto;
+      width:33%;
     }
     #gameplay {
       position: absolute;
@@ -39,9 +39,10 @@
     }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
     <style>
     body {
-      font-family: "Share Tech Mono", monospace;
+      font-family: "Muli", monospace;
     }
     h1, h4, h5 {
       text-align: center;
@@ -61,8 +62,10 @@
   <body>
     <div class="game-container">
       <h1 id="title">Stacks</h1>
-      <h4 id="game-over-heading" style="display:none;">Game over! You scored <span class="score-display"></span>.</h4>
-      <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
+      <div class="game-over-container">
+        <h4 id="game-over-heading" style="display:none;">Game over! You scored <span class="score-display"></span>.</h4>
+        <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
+      </div>
       <canvas id="gameplay" width="1" height="1"></canvas>
       <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#">Help</a>
     </div>
