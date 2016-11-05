@@ -99,8 +99,8 @@ Game.prototype.motionHandler = function() {
 
   var old_x = flyingElement.x;
   var old_y = flyingElement.y;
-  var new_x = xFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
-  var new_y = yFlight(this.stacks, this.motion.sourceStack, this.motion.targetStack);
+  var new_x = xFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
+  var new_y = yFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
 
   flyingElement.x = new_x;
   flyingElement.y = new_y;

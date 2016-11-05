@@ -1,11 +1,11 @@
-function xFlight(stacks, source, target) {
+function xFlight(game, stacks, source, target) {
   var s = source.size();
   var r = target.size();
   var g = Physics.GRAVITY;
   var h = Geometry.ELEMENT_HEIGHT;
   var T = Physics.FLIGHT_TIME;
 
-  var timeElapsed = _this.time - _this.motion.startTime;
+  var timeElapsed = game.time - game.motion.startTime;
   var coefficient = stacks.indexOf(target) - stacks.indexOf(source);
   var stackIndex = stacks.indexOf(source);
   var stackX = Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
@@ -14,14 +14,14 @@ function xFlight(stacks, source, target) {
     ((coefficient*(Geometry.ELEMENT_WIDTH + Geometry.ELEMENT_DIST)*timeElapsed)/T);
 }
 
-function yFlight(stacks, source, target) {
+function yFlight(game, stacks, source, target) {
   var s = source.size();
   var r = target.size();
   var g = Physics.GRAVITY;
   var h = Geometry.ELEMENT_HEIGHT;
   var T = Physics.FLIGHT_TIME;
 
-  var timeElapsed = _this.time - _this.motion.startTime;
+  var timeElapsed = game.time - game.motion.startTime;
 
   return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*s))/T +
     (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + Geometry.GROUND_HEIGHT + h*s);

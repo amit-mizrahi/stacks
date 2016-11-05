@@ -51,12 +51,6 @@ var Time = {
   MINIMUM_MIN_TIME: 10
 }
 
-var SMALLEST_HEIGHT = 400;
-
-var bodyWidth = Math.max($("body").width(),
-  SMALLEST_HEIGHT*($("body").width()/$("body").height()));
-var bodyHeight = Math.max($("body").height()*0.9, SMALLEST_HEIGHT);
-
 function setupGeometry(bodyWidth, bodyHeight) {
   var geom = {
     ELEMENT_WIDTH: bodyWidth/15.0,
@@ -86,6 +80,10 @@ var Geometry = {};
 var Physics = {};
 
 var adjustWindow = function() {
+  var SMALLEST_HEIGHT = 400;
+  var bodyWidth = Math.max($("body").width(),
+    SMALLEST_HEIGHT*($("body").width()/$("body").height()));
+  var bodyHeight = Math.max($("body").height()*0.9, SMALLEST_HEIGHT);
   Geometry = setupGeometry(bodyWidth, bodyHeight);
   Physics = setupPhysics(Geometry);
   $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
