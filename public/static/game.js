@@ -58,13 +58,13 @@ Game.prototype.beginMotion = function() {
     this.motion.startTime = this.time;
 }
 
-Game.prototype.drawStacks = function(ctx) {
-  // Draws a stack given whether the canvas context, the stack,
+Game.prototype.drawStacks = function() {
+  // Draws a stack given the canvas context, the stack,
   // the "x offset" of the stack, and whether the stack is selected.
 
-  ctx.fillStyle = CanvasColor.BROWN;
+  this.ctx.fillStyle = CanvasColor.BROWN;
   fillRect(
-    ctx,
+    this.ctx,
     0,
     0,
     Geometry.CANVAS_WIDTH,
@@ -74,20 +74,20 @@ Game.prototype.drawStacks = function(ctx) {
   for(var i = 0; i < this.stacks.length; i++) {
     var stack = this.stacks[i];
     if(this.currentStack == stack) {
-      ctx.fillStyle = CanvasColor.GRAY;
+      this.ctx.fillStyle = CanvasColor.GRAY;
     }
     else {
-      ctx.fillStyle = CanvasColor.BLACK;
+      this.ctx.fillStyle = CanvasColor.BLACK;
     }
     fillRect(
-      ctx,
+      this.ctx,
       Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
       Geometry.GROUND_HEIGHT,
       Geometry.ELEMENT_WIDTH,
       Geometry.MARKER_HEIGHT
     );
     for(var j = 0; j < stack.size(); j++) {
-      stack.elements[j].draw(ctx);
+      stack.elements[j].draw(this.ctx);
     }
   }
 }
@@ -185,12 +185,10 @@ Game.prototype.losing = function() {
 
 Game.prototype.gameOver = function() {
   this.lost = true;
-}
-
-Game.prototype.showGameOverMessage = function() {
   $("#title").hide();
-  ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
-  fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+  $("#explanation").hide();
+  this.ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
+  fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
   $("#game-over-heading").show();
   $("#game-over-text").show();
 }
@@ -231,14 +229,12 @@ Game.prototype.update = function() {
 }
 
 Game.prototype.draw = function() {
-  var canvas = document.getElementById("gameplay");
-  ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-  ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
-  fillRect(ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
+  this.ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+  this.ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
+  fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
     Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-  ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
-  fillRect(ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
+  this.ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
+  fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
     Geometry.CEILING_HEIGHT);
-  this.drawStacks(ctx);
+  this.drawStacks(this.ctx);
 }

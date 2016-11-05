@@ -16,7 +16,7 @@
     body {
       color:#333333;
     }
-    #title, .game-over-container {
+    #title, .game-over-container, #explanation {
       z-index:1000;
     }
     #title {
@@ -26,11 +26,10 @@
       font-size:48px;
     }
     .game-over-container {
+      position:absolute;
       top:20%;
+      left:39%;
       font-size:36px;
-      margin-left:auto;
-      margin-right:auto;
-      width:33%;
     }
     #gameplay {
       position: absolute;
@@ -43,6 +42,15 @@
       width:98%;
       top:90%;
       text-align: right;
+    }
+    #explanation {
+      position:absolute;
+      left:2%;
+      top:20%;
+      -webkit-border-radius:10px;
+      -moz-border-radius:10px;
+      background-color:#DBDBDB;
+      padding:10px;
     }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
@@ -69,6 +77,17 @@
   <body>
     <div class="game-container">
       <h1 id="title">Stacks</h1>
+      <div id="explanation">
+      <h3>How to Play</h3>
+      <ul>
+        <li>Use the arrow keys to move<br/>
+           between the stacks.
+        <li>Press A to launch an item<br/>
+          to the left of the current stack.
+        <li>Press D to launch an item to<br/>
+           the right of the current stack.
+      </ul>
+      </div>
       <div class="game-over-container">
         <h4 id="game-over-heading" style="display:none;">Game over! You scored <span class="score-display"></span>.</h4>
         <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>

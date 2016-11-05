@@ -1,6 +1,10 @@
 var newGame = function() {
 
   window.game = new Game();
+
+  var canvas = document.getElementById("gameplay");
+  game.ctx = canvas.getContext("2d");
+
   game.setupPositions();
   game.draw();
   Time.MIN_TIME = 50;
@@ -34,7 +38,6 @@ var newGame = function() {
     }
     else {
       $("body").unbind("keydown", keyHandler);
-      game.showGameOverMessage();
       $("body").keydown(makeNewGame);
     }
   }
