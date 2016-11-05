@@ -14,6 +14,7 @@ var DOM = {
 
   hideGameOverText: function() {
     $("#title").show();
+    $("#explanation").show();
     $("#game-over-heading").hide();
     $("#game-over-text").hide();
   },

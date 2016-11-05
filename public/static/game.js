@@ -1,4 +1,4 @@
-// requires Stack.js, Config.js, DOM.js
+// requires Stack.js, Config.js, DOM.js, Motion.js
 
 var Game = function() {
   this.stacks = [new Stack(), new Stack(), new Stack()]
@@ -39,10 +39,10 @@ Game.prototype.setupPositions = function() {
 Game.prototype.randomlyEnqueue = function() {
   var r = Math.floor(Math.abs(Math.random()*3 - 0.01));
   var randomStack = this.stacks[r];
-  var element = randomElement();
+  var element = randomStack.randomElement();
   if(randomStack.elements[0]) {
     while(element.color == randomStack.elements[0].color) {
-      element = randomElement();
+      element = randomStack.randomElement();
     }
   }
   randomStack.enqueue(element);
@@ -101,8 +101,8 @@ Game.prototype.motionHandler = function() {
 
   var old_x = flyingElement.x;
   var old_y = flyingElement.y;
-  var new_x = xFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
-  var new_y = yFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
+  var new_x = Motion.xFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
+  var new_y = Motion.yFlight(_this, this.stacks, this.motion.sourceStack, this.motion.targetStack);
 
   flyingElement.x = new_x;
   flyingElement.y = new_y;
@@ -133,7 +133,7 @@ Game.prototype.motionHandler = function() {
     stackTopX = Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(stackIndex+1) + Geometry.ELEMENT_WIDTH*stackIndex;
   }
 
-  if(isColliding(flyingElement, stackTopX, stackTopY, dy)) {
+  if(Motion.isColliding(flyingElement, stackTopX, stackTopY, dy)) {
     this.state = State.EVALUATING;
     this.motion.targetStack.push(this.motion.sourceStack.pop());
   }
@@ -171,7 +171,7 @@ Game.prototype.cancelHandler = function() {
     if(this.losing()) {
       this.gameOver();
     }
-    this.score = this.score + determineScore(top);
+    this.score = this.score + this.determineScore(top);
     DOM.updateScoreText(parseInt(this.score));
     this.state = State.AT_REST;
   }
