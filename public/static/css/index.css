@@ -1,0 +1,55 @@
+body {
+  color:#333333;
+}
+#title, .game-over-container, #explanation {
+  z-index:1000;
+}
+#title {
+  position: absolute;
+  top:5%;
+  left:2%;
+  font-size:48px;
+}
+.game-over-container {
+  position:absolute;
+  top:20%;
+  left:39%;
+  font-size:36px;
+}
+#gameplay {
+  position: absolute;
+  top:0;
+  left:0;
+  z-index:0;
+}
+#score-container {
+  position:absolute;
+  width:98%;
+  top:90%;
+  text-align: right;
+}
+#explanation {
+  position:absolute;
+  left:2%;
+  top:20%;
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  background-color:#DBDBDB;
+  padding:10px;
+}
+body {
+  font-family: "Muli", monospace;
+}
+h1, h4, h5 {
+  text-align: center;
+}
+a {
+  color:#000000;
+}
+p {
+  text-align:right;
+}
+#bottom-score {
+  font-weight:bold;
+  font-size:18px;
+}

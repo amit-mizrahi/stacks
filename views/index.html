@@ -3,75 +3,16 @@
     <title>Stacks</title>
     <style>
     </style>
-    <script src="/static/jquery.js"></script>
-    <script src="/static/Config.js"></script>
-    <script src="/static/DOM.js"></script>
-    <script src="/static/Element.js"></script>
-    <script src="/static/Stack.js"></script>
-    <script src="/static/Motion.js"></script>
-    <script src="/static/Game.js"></script>
-    <script src="/static/GameLogic.js"></script>
-    <style>
-    body {
-      color:#333333;
-    }
-    #title, .game-over-container, #explanation {
-      z-index:1000;
-    }
-    #title {
-      position: absolute;
-      top:5%;
-      left:2%;
-      font-size:48px;
-    }
-    .game-over-container {
-      position:absolute;
-      top:20%;
-      left:39%;
-      font-size:36px;
-    }
-    #gameplay {
-      position: absolute;
-      top:0;
-      left:0;
-      z-index:0;
-    }
-    #score-container {
-      position:absolute;
-      width:98%;
-      top:90%;
-      text-align: right;
-    }
-    #explanation {
-      position:absolute;
-      left:2%;
-      top:20%;
-      -webkit-border-radius:10px;
-      -moz-border-radius:10px;
-      background-color:#DBDBDB;
-      padding:10px;
-    }
-    </style>
-    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/Config.js"></script>
+    <script src="/static/js/DOM.js"></script>
+    <script src="/static/js/Element.js"></script>
+    <script src="/static/js/Stack.js"></script>
+    <script src="/static/js/Motion.js"></script>
+    <script src="/static/js/Game.js"></script>
+    <script src="/static/js/GameLogic.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-    <style>
-    body {
-      font-family: "Muli", monospace;
-    }
-    h1, h4, h5 {
-      text-align: center;
-    }
-    a {
-      color:#000000;
-    }
-    p {
-      text-align:right;
-    }
-    #bottom-score {
-      font-weight:bold;
-      font-size:18px;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css"></style>
   </head>
   <body>
     <div class="game-container">
@@ -90,7 +31,8 @@
       </ul>
       </div>
       <div class="game-over-container">
-        <h4 id="game-over-heading" style="display:none;">Game over! You scored <span class="score-display"></span>.</h4>
+        <h4 id="game-over-heading" style="display:none;">Game over! You scored
+          <span class="score-display"></span>.</h4>
         <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
       </div>
       <canvas id="gameplay" width="1" height="1"></canvas>
