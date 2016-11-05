@@ -51,29 +51,30 @@ var Time = {
   MINIMUM_MIN_TIME: 10
 };
 
-var setupGeometry = function(bodyWidth, bodyHeight) {
-  var geom = {
-    ELEMENT_WIDTH: bodyWidth / 15.0,
-    ELEMENT_HEIGHT: bodyHeight / 8.0,
-    ELEMENT_DIST: bodyWidth / 15.0, // Distance between stacks
-    ELEMENT_OFFSET: bodyWidth / 3.7,
-    MARKER_HEIGHT: bodyHeight / 15.0, // Height of marker underneath each stack
-    CANVAS_WIDTH: bodyWidth,
-    CANVAS_HEIGHT: bodyHeight,
-    GROUND_HEIGHT: bodyHeight / 8.0,
-    CEILING_HEIGHT: bodyHeight / 15.0
+var setupGeometry = function(canvasWidth, canvasHeight) {
+  var Geometry = {
+    ELEMENT_WIDTH: canvasWidth / 15.0,
+    ELEMENT_HEIGHT: canvasHeight / 8.0,
+    ELEMENT_DIST: canvasWidth / 15.0, // Distance between stacks
+    ELEMENT_OFFSET: canvasWidth / 3.7,
+    MARKER_HEIGHT: canvasHeight / 15.0, // Height of marker underneath each stack
+    CANVAS_WIDTH: canvasWidth,
+    CANVAS_HEIGHT: canvasHeight,
+    GROUND_HEIGHT: canvasHeight / 8.0,
+    CEILING_HEIGHT: canvasHeight / 15.0
   };
-  geom.STACK_HEIGHT_THRESHOLD = (geom.CANVAS_HEIGHT -
-    (geom.GROUND_HEIGHT + geom.MARKER_HEIGHT + geom.CEILING_HEIGHT))/(geom.ELEMENT_HEIGHT);
-  return geom;
+  Geometry.STACK_HEIGHT_THRESHOLD = (Geometry.CANVAS_HEIGHT -
+    (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + Geometry.CEILING_HEIGHT))
+    /(Geometry.ELEMENT_HEIGHT);
+  return Geometry;
 };
 
-var setupPhysics = function(geom) {
-  var phys = {
-    GRAVITY: 9e-4 * geom.CANVAS_HEIGHT,
+var setupPhysics = function(Geometry) {
+  var Physics = {
+    GRAVITY: 9e-4 * Geometry.CANVAS_HEIGHT,
     FLIGHT_TIME: 40
   };
-  return phys;
+  return Physics;
 };
 
 var Geometry;
@@ -81,11 +82,13 @@ var Physics;
 
 var Config = {
   adjustWindow: function () {
-    var SMALLEST_HEIGHT = 400;
-    var bodyWidth = Math.max($("body").width(),
-      SMALLEST_HEIGHT * ($("body").width() / $("body").height()));
-    var bodyHeight = Math.max($("body").height() * 0.9, SMALLEST_HEIGHT);
-    Geometry = setupGeometry(bodyWidth, bodyHeight);
+    var bodyWidth = $(window).width();
+    var bodyHeight = $(window).height();
+    var SMALLEST_WIDTH = 900;
+    var canvasWidth = Math.max(bodyWidth, SMALLEST_WIDTH);
+    var canvasHeight = Math.max(bodyHeight * 0.9,
+      SMALLEST_WIDTH * (bodyHeight / bodyWidth) * 0.9);
+    Geometry = setupGeometry(canvasWidth, canvasHeight);
     Physics = setupPhysics(Geometry);
     $("#gameplay").attr("width", Geometry.CANVAS_WIDTH);
     $("#gameplay").attr("height", Geometry.CANVAS_HEIGHT);
