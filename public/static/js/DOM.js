@@ -21,5 +21,9 @@ var DOM = {
 
   fillRect: function(ctx, x, y, width, height) {
     ctx.fillRect(x, Geometry.CANVAS_HEIGHT - y, width, -1 * height);
+  },
+
+  drawRect: function(ctx, x, y, width, height) {
+    ctx.strokeRect(x, Geometry.CANVAS_HEIGHT - y, width, -1 * height);
   }
 }

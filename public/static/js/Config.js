@@ -28,7 +28,7 @@ var CanvasColor = {
   RED: "#F17777",
   YELLOW: "#F1DD77",
   BLUE: "#527B9B",
-  GRAY: "#555555",
+  GRAY: "#AAAAAA",
   BLACK: "#121212",
   BROWN: "#333333",
   CANCEL_COLOR: "#FFFFCC",

@@ -89,7 +89,7 @@ Game.prototype.drawStacks = function() {
       Geometry.MARKER_HEIGHT
     );
     for(var j = 0; j < stack.size(); j++) {
-      stack.elements[j].draw(this.ctx);
+      stack.elements[j].draw(this.ctx, this.currentStack == stack);
     }
   }
 }
