@@ -6,6 +6,7 @@ var Game = function() {
   this.state = State.AT_REST;
 
   this.time = 0;
+  this.minTime = Time.DEFAULT_MIN_TIME;
   this.lastEnqueued = 0;
   this.score = 0;
   this.lost = false;
@@ -222,11 +223,11 @@ Game.prototype.update = function() {
   if(this.state == State.AT_REST) {
     r = Math.random();
     if(r < this.time*Time.RANDOM_TIME_THRESHOLD &&
-        this.time - this.lastEnqueued > Time.MIN_TIME) {
+        this.time - this.lastEnqueued > this.minTime) {
       // Decrease minimum time between enqueueings
 
-      if(Time.MIN_TIME > Time.MINIMUM_MIN_TIME) {
-        Time.MIN_TIME -= 1;
+      if(this.minTime > Time.MINIMUM_MIN_TIME) {
+        this.minTime -= 1;
       }
 
       this.randomlyEnqueue();
