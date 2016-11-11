@@ -17,6 +17,7 @@ var newGame = function() {
     if(e.keyCode == Key.ENTER) {
       newGame();
     }
+    $("body").unbind("keydown", makeNewGame);
   }
 
   var keyHandler = function(e) {
@@ -27,16 +28,16 @@ var newGame = function() {
     return result;
   }
 
-  $("body").unbind("keydown", makeNewGame);
   $("body").keydown(keyHandler);
 
   var gameLoop = function() {
     if(!game.lost) {
       game.update();
       game.draw();
-      requestAnimationFrame(gameLoop);
+      myReq = requestAnimationFrame(gameLoop);
     }
     else {
+      cancelAnimationFrame(myReq);
       $("body").unbind("keydown", keyHandler);
       $("body").keydown(makeNewGame);
     }
@@ -86,7 +87,7 @@ var newGame = function() {
     return false;
   }
 
-  requestAnimationFrame(gameLoop);
+  var myReq = requestAnimationFrame(gameLoop);
 }
 
 $(function() {
