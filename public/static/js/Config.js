@@ -25,16 +25,15 @@ var ColorScore = {
 };
 
 var CanvasColor = {
-  RED: "#F17777",
-  YELLOW: "#F1DD77",
-  BLUE: "#527B9B",
+  RED: "#FF1940",
+  YELLOW: "#FFE700",
+  BLUE: "#468AFF",
   GRAY: "#AAAAAA",
   BLACK: "#121212",
   BROWN: "#333333",
   CANCEL_COLOR: "#FFFFCC",
-  GREEN: "#5AB66F",
-  PURPLE: "#90519F",
-  ORANGE: "#F1AD78"
+  GREEN: "#46FF6B",
+  PURPLE: "#FF00F1"
 };
 
 var State = {

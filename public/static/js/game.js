@@ -205,9 +205,6 @@ Game.prototype.determineScore = function(block) {
   else if(block.color == Color.PURPLE) {
     return 1000;
   }
-  else if(block.color == Color.ORANGE) {
-    return 2000;
-  }
   else {
     return 0;
   }
@@ -250,9 +247,10 @@ Game.prototype.update = function() {
 
 Game.prototype.draw = function() {
   this.ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-  this.ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
+  this.ctx.fillStyle = 'rgba(100, 0, 0, 0.7)';
   DOM.fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
     Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+  DOM.drawExplanation(this.ctx);
   this.ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
   DOM.fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
     Geometry.CEILING_HEIGHT);
