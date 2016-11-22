@@ -28,6 +28,9 @@ Element.prototype.draw = function(ctx, isCurrentStack) {
       case Color.PURPLE:
         ctx.fillStyle = CanvasColor.PURPLE;
         break;
+      case Color.ORANGE:
+        ctx.fillStyle = CanvasColor.ORANGE;
+        break;
       default:
         break;
     }
