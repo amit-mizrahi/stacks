@@ -12,33 +12,47 @@
     <script src="/static/js/Game.js"></script>
     <script src="/static/js/GameLogic.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/foundation.min.css"></style>
     <link rel="stylesheet" type="text/css" href="/static/css/index.css"></style>
   </head>
   <body>
     <div class="game-container">
-      <h1 id="title">Stacks</h1>
       <div id="explanation">
-      <h3>How to Play</h3>
-      <ul>
-        <li>Use J and K to move<br/>
-           between the stacks.
-        <li>Press D to launch an item<br/>
-          to the left of the current stack.
-        <li>Press F to launch an item to<br/>
-           the right of the current stack.
-        <li>Try to make blocks of the same
-          color touch!</li>
-        <br/>
-        <a href="#" class="begin">Begin</a>
-      </ul>
+        <h1 id="title">Stacks</h1>
+        <div id="explanation-left">
+          <ul>
+            <li>Use the left and right arrows to move<br/>
+               between the stacks.
+            <li>Press the up arrow to launch an item<br/>
+              to the left of the current stack.
+            <li>Press the down arrow to launch an item to<br/>
+               the right of the current stack.
+            <li>Try to make blocks of the same
+              color touch!</li>
+          </ul>
+          <ul>
+            <li class="button-right">
+              <a href="#" class="begin button secondary">Begin</a>
+            </li>
+          </ul>
+          <br/>
+        </div>
+        <div id="explanation-right">
+          <p id="screenshot"><img id="screen" src="/static/img/screen.png"></p>
+        </div>
       </div>
-      <div class="game-over-container">
-        <h4 id="game-over-heading" style="display:none;">Game over! You scored
-          <span class="score-display"></span>.</h4>
-        <h5 id="game-over-text" style="display:none;">Click anywhere to play again.</h5>
+      <div class="gameplay">
+          <div class="game-over-container">
+            <h4 id="game-over-heading" style="display:none;">Game over! You scored
+              <span class="score-display"></span>.</h4>
+            <h5 id="game-over-text" style="display:none;">Click anywhere to play again.</h5>
+          </div>
+          <canvas id="gameplay" width="1" height="1"></canvas>
+          <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#">Help</a>
+        </div>
       </div>
-      <canvas id="gameplay" width="1" height="1"></canvas>
-      <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#">Help</a>
-    </div>
+      <footer>
+        <p>&copy; 2016 Amit Mizrahi. &middot; <a href="http://www.amizrahi.com">amizrahi.com</a> </p>
+      </footer>
   </body>
 </html>

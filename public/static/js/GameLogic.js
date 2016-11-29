@@ -89,8 +89,11 @@ var newGame = function() {
 }
 
 $(function() {
+  $(".gameplay").hide();
   $(".begin").click(function() {
-    $(this).hide();
+    $(this).parent().parent().parent().parent().remove();
+    $("footer").remove();
+    $(".gameplay").show();
     Config.adjustWindow();
     newGame();
   });

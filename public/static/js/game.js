@@ -84,8 +84,8 @@ Game.prototype.drawStacks = function() {
       Geometry.ELEMENT_WIDTH,
       Geometry.MARKER_HEIGHT
     );
-    if(this.currentStack != stack) {
-      this.ctx.fillStyle = 'rgba(255, 225, 225, 0.55)';
+    /*if(this.currentStack != stack) {
+      this.ctx.fillStyle = 'rgba(255, 255, 200, 0.70)';
       DOM.fillRect(
         this.ctx,
         Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
@@ -93,7 +93,7 @@ Game.prototype.drawStacks = function() {
         Geometry.ELEMENT_WIDTH,
         Geometry.MARKER_HEIGHT
       );
-    }
+    }*/
     for(var j = 0; j < stack.size(); j++) {
       stack.elements[j].draw(this.ctx, this.currentStack == stack);
     }
