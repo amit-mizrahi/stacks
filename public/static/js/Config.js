@@ -1,8 +1,10 @@
 var Key = {
-  LEFT_SELECT: 74,
-  RIGHT_SELECT: 76,
-  LEFT_POP: 83,
-  RIGHT_POP: 70,
+  LEFT_SELECT: 37,
+  RIGHT_SELECT: 39,
+  /*LEFT_POP: 68,
+  RIGHT_POP: 70, */
+  LEFT_POP: 40,
+  RIGHT_POP: 38,
   ENTER: 13
 };
 
