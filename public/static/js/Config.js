@@ -1,8 +1,8 @@
 var Key = {
-  LEFT_SELECT: 37,
-  RIGHT_SELECT: 39,
-  LEFT_POP: 65,
-  RIGHT_POP: 68,
+  LEFT_SELECT: 74,
+  RIGHT_SELECT: 76,
+  LEFT_POP: 83,
+  RIGHT_POP: 70,
   ENTER: 13
 };
 
@@ -53,9 +53,9 @@ var Time = {
 
 var setupGeometry = function(canvasWidth, canvasHeight) {
   var Geometry = {
-    ELEMENT_WIDTH: canvasWidth / 15.0,
-    ELEMENT_HEIGHT: canvasHeight / 8.0,
-    ELEMENT_DIST: canvasWidth / 15.0, // Distance between stacks
+    ELEMENT_WIDTH: canvasWidth / 20.0,
+    ELEMENT_HEIGHT: canvasHeight / 10.0,
+    ELEMENT_DIST: canvasWidth / 10, // Distance between stacks
     ELEMENT_OFFSET: canvasWidth / 3.7,
     MARKER_HEIGHT: canvasHeight / 15.0, // Height of marker underneath each stack
     CANVAS_WIDTH: canvasWidth,

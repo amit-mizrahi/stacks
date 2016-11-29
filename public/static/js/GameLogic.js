@@ -37,9 +37,9 @@ var newGame = function() {
       myReq = requestAnimationFrame(gameLoop);
     }
     else {
-      cancelAnimationFrame(myReq);
       $("body").unbind("keydown", keyHandler);
-      $("body").keydown(makeNewGame);
+      $("body").bind("keydown", makeNewGame);
+      cancelAnimationFrame(myReq);
     }
   }
 
