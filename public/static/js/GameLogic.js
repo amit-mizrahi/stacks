@@ -89,6 +89,8 @@ var newGame = function() {
 }
 
 $(function() {
-  Config.adjustWindow();
-  newGame();
+  $(".begin").click(function() {
+    Config.adjustWindow();
+    newGame();
+  });
 })

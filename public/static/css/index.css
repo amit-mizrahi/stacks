@@ -53,3 +53,11 @@ p {
   font-weight:bold;
   font-size:18px;
 }
+
+.begin .begin:hover .begin:active {
+  display:block;
+  margin-top:10px;
+  padding:5px;
+  background-color:#888888;
+  color:#000000 !important;
+}
