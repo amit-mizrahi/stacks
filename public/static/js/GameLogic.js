@@ -2,7 +2,7 @@
 
 var newGame = function() {
 
-  window.game = new Game();
+  var game = new Game();
 
   var canvas = document.getElementById("gameplay");
   game.ctx = canvas.getContext("2d");
@@ -14,8 +14,10 @@ var newGame = function() {
   DOM.hideGameOverText();
 
   var makeNewGame = function(e) {
-    newGame();
-    $("body").unbind("keydown", makeNewGame);
+    if(e.keyCode == Key.ENTER) {
+      $("body").unbind("keydown", makeNewGame);
+      newGame();
+    }
   }
 
   var keyHandler = function(e) {
@@ -36,7 +38,7 @@ var newGame = function() {
     }
     else {
       $("body").unbind("keydown", keyHandler);
-      $("body").click(makeNewGame);
+      $("body").keydown(makeNewGame);
       cancelAnimationFrame(myReq);
     }
   }
@@ -91,7 +93,7 @@ var newGame = function() {
 $(function() {
   $(".gameplay").hide();
   $(".begin").click(function() {
-    $(this).parent().parent().parent().parent().remove();
+    $("#explanation").remove();
     $("footer").remove();
     $(".gameplay").show();
     Config.adjustWindow();

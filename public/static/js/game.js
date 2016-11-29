@@ -84,16 +84,16 @@ Game.prototype.drawStacks = function() {
       Geometry.ELEMENT_WIDTH,
       Geometry.MARKER_HEIGHT
     );
-    /*if(this.currentStack != stack) {
-      this.ctx.fillStyle = 'rgba(255, 255, 200, 0.70)';
+    if(this.currentStack == stack) {
+      this.ctx.fillStyle = 'rgba(255, 255, 50, 0.90)';
       DOM.fillRect(
         this.ctx,
         Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
-        Geometry.GROUND_HEIGHT,
+        0,
         Geometry.ELEMENT_WIDTH,
-        Geometry.MARKER_HEIGHT
+        Geometry.GROUND_HEIGHT
       );
-    }*/
+    }
     for(var j = 0; j < stack.size(); j++) {
       stack.elements[j].draw(this.ctx, this.currentStack == stack);
     }
@@ -256,11 +256,11 @@ Game.prototype.update = function() {
 
 Game.prototype.draw = function() {
   this.ctx.clearRect(0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
-  this.ctx.fillStyle = 'rgba(230, 0, 0, 0.7)';
-  DOM.fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
-    Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
   this.ctx.fillStyle = 'rgba(225, 225, 225, 0.9)';
   DOM.fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT -
     Geometry.CEILING_HEIGHT);
   this.drawStacks(this.ctx);
+  this.ctx.fillStyle = 'rgba(230, 0, 0, 1)';
+  DOM.fillRect(this.ctx, 0, Geometry.CANVAS_HEIGHT - Geometry.CEILING_HEIGHT,
+    Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
 }
