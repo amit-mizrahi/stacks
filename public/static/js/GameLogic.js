@@ -14,9 +14,7 @@ var newGame = function() {
   DOM.hideGameOverText();
 
   var makeNewGame = function(e) {
-    if(e.keyCode == Key.ENTER) {
-      newGame();
-    }
+    newGame();
     $("body").unbind("keydown", makeNewGame);
   }
 
@@ -38,7 +36,7 @@ var newGame = function() {
     }
     else {
       $("body").unbind("keydown", keyHandler);
-      $("body").bind("keydown", makeNewGame);
+      $("body").click(makeNewGame);
       cancelAnimationFrame(myReq);
     }
   }
