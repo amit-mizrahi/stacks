@@ -16,9 +16,6 @@ Element.prototype.draw = function(ctx, isCurrentStack) {
       case Color.RED:
         ctx.fillStyle = CanvasColor.RED;
         break;
-      case Color.YELLOW:
-        ctx.fillStyle = CanvasColor.YELLOW;
-        break;
       case Color.BLUE:
         ctx.fillStyle = CanvasColor.BLUE;
         break;
@@ -27,9 +24,6 @@ Element.prototype.draw = function(ctx, isCurrentStack) {
         break;
       case Color.PURPLE:
         ctx.fillStyle = CanvasColor.PURPLE;
-        break;
-      case Color.ORANGE:
-        ctx.fillStyle = CanvasColor.ORANGE;
         break;
       default:
         break;

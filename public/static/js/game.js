@@ -85,7 +85,7 @@ Game.prototype.drawStacks = function() {
       Geometry.MARKER_HEIGHT
     );
     if(this.currentStack == stack) {
-      this.ctx.fillStyle = 'rgba(255, 255, 50, 0.90)';
+      this.ctx.fillStyle = 'rgba(255, 255, 100, 0.90)';
       DOM.fillRect(
         this.ctx,
         Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,
@@ -201,8 +201,7 @@ Game.prototype.gameOver = function() {
 
 Game.prototype.determineScore = function(block) {
   if(block.color == Color.RED ||
-    block.color == Color.BLUE ||
-    block.color == Color.YELLOW) {
+    block.color == Color.BLUE) {
     return 200;
   }
   else if(block.color == Color.GREEN) {
@@ -210,9 +209,6 @@ Game.prototype.determineScore = function(block) {
   }
   else if(block.color == Color.PURPLE) {
     return 1000;
-  }
-  else if(block.color == Color.ORANGE) {
-    return 2000;
   }
   else {
     return 0;

@@ -10,33 +10,27 @@ var Key = {
 
 var Color = {
   RED: 1,
-  YELLOW: 2,
   BLUE: 3,
   GREEN: 4,
   PURPLE: 5,
-  ORANGE: 6
 };
 
 var ColorScore = {
   RED: 1,
-  BLUE: 2,
-  YELLOW: 5,
+  BLUE: 5,
   GREEN: 10,
-  PURPLE: 50,
-  ORANGE: 100
+  PURPLE: 50
 };
 
 var CanvasColor = {
   RED: "#F17777",
-  YELLOW: "#F1DD77",
   BLUE: "#527B9B",
   GRAY: "#AAAAAA",
   BLACK: "#121212",
   BROWN: "#333333",
   CANCEL_COLOR: "#FFFFCC",
   GREEN: "#5AB66F",
-  PURPLE: "#90519F",
-  ORANGE: "#F1AD78"
+  PURPLE: "#90519F"
 };
 
 var State = {
