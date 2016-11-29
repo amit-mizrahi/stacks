@@ -24,21 +24,22 @@
 }
 #explanation-left {
   float:left;
-  width:50%;
+  width:45%;
+  margin-right:5%;
 }
 #explanation-right {
   float:left;
-  width:50%;
+  width:45%;
 }
 #explanation-left li {
   padding-bottom:10px;
 }
 #screenshot {
-  text-align:center;
+  text-align:right;
 }
 #screen {
-  width:250px;
-  height:250px
+  width:200px;
+  height:200px
 }
 #score-container {
   position:absolute;
@@ -58,6 +59,7 @@ a {
 #bottom-score {
   font-weight:bold;
   font-size:18px;
+  padding:15px;
 }
 .begin {
   text-decoration:none;

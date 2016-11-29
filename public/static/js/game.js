@@ -179,6 +179,7 @@ Game.prototype.cancelHandler = function() {
     }
     this.score = this.score + this.determineScore(top);
     DOM.updateScoreText(parseInt(this.score));
+    DOM.animateScoreChange();
     this.state = State.AT_REST;
   }
 }

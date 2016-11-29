@@ -1,8 +1,14 @@
 // requires Config.js
 
 var DOM = {
+  animateScoreChange: function() {
+    $(".score-display").css("background-color", "#ffe74c");
+    $(".score-display").animate({backgroundColor: "#FFFFFF"}, 1000);
+  },
+
   updateScoreText: function(score) {
     $(".score-display").text(score);
+    $(".score-display-big").text(score);
   },
 
   showGameOverText: function() {
