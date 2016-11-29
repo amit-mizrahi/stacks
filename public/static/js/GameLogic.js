@@ -40,6 +40,8 @@ var newGame = function() {
       $("body").unbind("keydown", keyHandler);
       $("body").keydown(makeNewGame);
       cancelAnimationFrame(myReq);
+      game.ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
+      DOM.fillRect(game.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
     }
   }
 

@@ -194,8 +194,6 @@ Game.prototype.losing = function() {
 
 Game.prototype.gameOver = function() {
   this.lost = true;
-  this.ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
-  DOM.fillRect(this.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
   DOM.showGameOverText(); // from DOM.js
 }
 
