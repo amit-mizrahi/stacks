@@ -37,7 +37,7 @@ Element.prototype.draw = function(ctx, isCurrentStack) {
   }
   DOM.fillRect(ctx, this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   if(!isCurrentStack) {
-    ctx.fillStyle = 'rgba(255, 225, 225, 0.4)';
+    ctx.fillStyle = 'rgba(255, 225, 225, 0.55)';
     DOM.fillRect(ctx, this.x, this.y, Geometry.ELEMENT_WIDTH, Geometry.ELEMENT_HEIGHT);
   }
 }

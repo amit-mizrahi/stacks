@@ -85,7 +85,7 @@ Game.prototype.drawStacks = function() {
       Geometry.MARKER_HEIGHT
     );
     if(this.currentStack != stack) {
-      this.ctx.fillStyle = 'rgba(255, 225, 225, 0.4)';
+      this.ctx.fillStyle = 'rgba(255, 225, 225, 0.55)';
       DOM.fillRect(
         this.ctx,
         Geometry.ELEMENT_OFFSET + Geometry.ELEMENT_DIST*(i+1) + Geometry.ELEMENT_WIDTH*i,

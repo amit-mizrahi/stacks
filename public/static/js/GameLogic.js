@@ -90,6 +90,7 @@ var newGame = function() {
 
 $(function() {
   $(".begin").click(function() {
+    $(this).hide();
     Config.adjustWindow();
     newGame();
   });
