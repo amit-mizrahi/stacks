@@ -1,6 +1,6 @@
 {
   "name": "stacks-game",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "An HTML5 game.",
   "engines": {
     "node": "5.9.1"
@@ -10,6 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "body-parser": "1.15.2",
     "ejs": "2.4.1",
     "express": "4.13.3"
   },
