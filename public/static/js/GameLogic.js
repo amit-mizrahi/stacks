@@ -114,10 +114,16 @@ $(function() {
   $(".help").hide();
   $(".gameplay").hide();
   $(".begin").click(function() {
-    $("#explanation").remove();
-    $("footer").remove();
-    $(".gameplay").show();
-    Config.adjustWindow();
-    newGame();
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    if(!isChrome) {
+      $("#status").text("This game is only supported on Google Chrome for now.");
+    }
+    else {
+      $("#explanation").remove();
+      $("footer").remove();
+      $(".gameplay").show();
+      Config.adjustWindow();
+      newGame();
+    }
   });
 })
