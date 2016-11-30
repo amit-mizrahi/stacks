@@ -22,16 +22,16 @@ Stack.prototype.pop = function() {
 
 Stack.prototype.randomElement = function() {
   var r = Math.random();
-  if(r < 0.33) {
+  if(r < 0.333) {
     return new Element(Color.RED);
   }
-  else if(0.33 <= r && r < 0.66) {
+  else if(0.333 <= r && r < 0.667) {
     return new Element(Color.BLUE);
   }
-  else if(0.66 <= r && r < 0.75) {
+  else if(0.667 <= r && r < 0.833) {
     return new Element(Color.ORANGE);
   }
-  else if(0.75 <= r <= 0.9) {
+  else if(0.833 <= r <= 0.917) {
     return new Element(Color.GREEN);
   }
   else {

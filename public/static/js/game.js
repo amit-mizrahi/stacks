@@ -198,18 +198,14 @@ Game.prototype.gameOver = function() {
 }
 
 Game.prototype.determineScore = function(block) {
-  if(block.color == Color.RED ||
-    block.color == Color.BLUE) {
+  if(block.color == Color.RED || block.color == Color.BLUE) {
     return 200;
   }
   else if(block.color == Color.ORANGE) {
-    return 300;
+    return 400;
   }
-  else if(block.color == Color.GREEN) {
-    return 500;
-  }
-  else if(block.color == Color.PURPLE) {
-    return 1000;
+  else if(block.color == Color.GREEN || block.color == Color.PURPLE) {
+    return 800;
   }
   else {
     return 0;
