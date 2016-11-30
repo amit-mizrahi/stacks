@@ -24,12 +24,7 @@ var DOM = {
   updateTweetBox: function(text) {
     $("#share").append(
       $("<a href='https://twitter.com/share' class='twitter-share-button' data-size='large' data-text='" + text + "' data-url='http://stacks.amizrahi.com' data-hashtags='StacksGame' data-show-count='false'>Tweet</a><script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
-    );
-    /* FB.ui({
-      method: 'feed',
-      link: 'https://stacks.amizrahi.com',
-      caption: text,
-    }, function(response){}); */
+    )
   },
 
   hideGameOverText: function() {
