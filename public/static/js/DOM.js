@@ -18,15 +18,19 @@ var DOM = {
   showGameOverText: function() {
     $("#title").hide();
     $("#explanation").hide();
-    $("#game-over-heading").show();
-    $("#game-over-text").show();
+    $(".game-over-container").show();
+  },
+
+  updateTweetBox: function(text) {
+    $("#share").append(
+      $("<a href='https://twitter.com/share' class='twitter-share-button' data-size='large' data-text='" + text + "' data-url='http://stacks.amizrahi.com' data-hashtags='StacksGame' data-show-count='false'>Tweet</a><script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
+    );
   },
 
   hideGameOverText: function() {
     $("#title").show();
     $("#explanation").show();
-    $("#game-over-heading").hide();
-    $("#game-over-text").hide();
+    $(".game-over-container").hide();
   },
 
   fillRect: function(ctx, x, y, width, height) {

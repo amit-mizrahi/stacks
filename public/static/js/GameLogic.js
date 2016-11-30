@@ -48,6 +48,7 @@ var newGame = function() {
         highestScore = game.score;
         DOM.updateHighScore(highestScore);
       }
+      DOM.updateTweetBox("I got a score of " + game.score + " in Stacks! ");
     }
   }
 
