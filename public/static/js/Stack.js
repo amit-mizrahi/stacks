@@ -29,9 +29,12 @@ Stack.prototype.randomElement = function() {
     return new Element(Color.BLUE);
   }
   else if(0.66 <= r && r < 0.75) {
+    return new Element(Color.ORANGE);
+  }
+  else if(0.75 <= r <= 0.9) {
     return new Element(Color.GREEN);
   }
-  else if(0.75 <= r) {
+  else {
     return new Element(Color.PURPLE);
   }
 }

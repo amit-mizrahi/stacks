@@ -202,6 +202,9 @@ Game.prototype.determineScore = function(block) {
     block.color == Color.BLUE) {
     return 200;
   }
+  else if(block.color == Color.ORANGE) {
+    return 300;
+  }
   else if(block.color == Color.GREEN) {
     return 500;
   }

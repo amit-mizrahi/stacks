@@ -22,14 +22,10 @@
         <h1 id="title">Stacks</h1>
         <div id="explanation-left">
           <ul>
-            <li>Use the left and right arrows to move<br/>
-               between the stacks.
-            <li>Press the up arrow to launch an item<br/>
-              to the left of the current stack.
-            <li>Press the down arrow to launch an item to<br/>
-               the right of the current stack.
-            <li>Try to make blocks of the same
-              color touch!</li>
+            <li>Use the left and right arrows to move between the stacks. The current stack has a yellow indicator beneath it.
+            <li>Press the up arrow to launch an item to the left of the current stack.
+            <li>Press the down arrow to launch an item to the right of the current stack.
+            <li>Try to make blocks of the same color touch, and don't let any of the stacks reach the top!</li>
           </ul>
           <ul>
             <li class="button-right">
@@ -49,11 +45,25 @@
             <h5 id="game-over-text" style="display:none;">Press ENTER to play again.</h5>
           </div>
           <canvas id="gameplay" width="1" height="1"></canvas>
-          <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#">Help</a></p>
+          <p id="score-container">Score: <span class="score-display" id="bottom-score">0</span> &middot; <a href="#" id="trigger-help">Help</a></p>
         </div>
       </div>
       <footer>
         <p>&copy; 2016 Amit Mizrahi. &middot; <a href="http://www.amizrahi.com">amizrahi.com</a> <!-- &middot; Source code for Stacks: <a href="http://github.com/amizra/stacks">GitHub</a> --> </p>
       </footer>
+      <div class="help">
+        <h3>Instructions</h3>
+        <ul>
+          <li>Use the left and right arrows to move between the stacks. The current stack has a yellow indicator beneath it.
+          <li>Press the up arrow to launch an item to the left of the current stack.
+          <li>Press the down arrow to launch an item to the right of the current stack.
+          <li>Try to make blocks of the same color touch, and don't let any of the stacks reach the top!</li>
+        </ul>
+        <ul>
+          <li class="button-right">
+            <a href="#" class="button secondary" id="trigger-hide">OK</a>
+          </li>
+        </ul>
+      </div>
   </body>
 </html>

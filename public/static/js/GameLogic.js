@@ -90,9 +90,20 @@ var newGame = function() {
   }
 
   var myReq = requestAnimationFrame(gameLoop);
+  $("#trigger-help").click(function() {
+    cancelAnimationFrame(myReq);
+    $(".help").show();
+    $("#trigger-hide").click(function() {
+      if(!game.lost) {
+        myReq = requestAnimationFrame(gameLoop);
+      }
+      $(".help").hide();
+    })
+  });
 }
 
 $(function() {
+  $(".help").hide();
   $(".gameplay").hide();
   $(".begin").click(function() {
     $("#explanation").remove();

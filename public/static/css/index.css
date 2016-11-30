@@ -19,7 +19,7 @@
 #explanation {
   margin-left:auto;
   margin-right:auto;
-  width:40%;
+  width:50%;
   overflow:hidden;
 }
 #explanation-left {
@@ -61,7 +61,16 @@ a {
   font-size:18px;
   padding:15px;
 }
-.begin {
+.help {
+  z-index:1000;
+  position:absolute;
+  top:25%;
+  left:25%;
+  width:50%;
+  background-color:#FFFFFF;
+  padding:20px;
+}
+.begin, #trigger-hide {
   text-decoration:none;
 }
 .button-right {
@@ -71,6 +80,6 @@ a {
 footer {
   margin-left:auto;
   margin-right:auto;
-  width:65%;
+  width:81%;
   border-top:1px solid #888888;
 }
