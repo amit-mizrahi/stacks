@@ -1,5 +1,7 @@
 // requires Game.js, DOM.js, Config.js
 
+var highestScore = 0;
+
 var newGame = function() {
 
   var game = new Game();
@@ -42,6 +44,10 @@ var newGame = function() {
       cancelAnimationFrame(myReq);
       game.ctx.fillStyle = 'rgba(250, 200, 200, 0.5)';
       DOM.fillRect(game.ctx, 0, 0, Geometry.CANVAS_WIDTH, Geometry.CANVAS_HEIGHT);
+      if(game.score > highestScore) {
+        highestScore = game.score;
+        DOM.updateHighScore(highestScore);
+      }
     }
   }
 

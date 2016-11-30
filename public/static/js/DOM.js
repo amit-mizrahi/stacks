@@ -11,6 +11,10 @@ var DOM = {
     $(".score-display-big").text(score);
   },
 
+  updateHighScore: function(score) {
+    $(".highest-score").text(score);
+  },
+
   showGameOverText: function() {
     $("#title").hide();
     $("#explanation").hide();
