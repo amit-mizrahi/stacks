@@ -83,3 +83,22 @@ footer {
   width:81%;
   border-top:1px solid #888888;
 }
+.fb-like {
+  display:inline;
+}
+
+.left {
+  float:left;
+  width:50%;
+}
+.right {
+  margin-top:20px;
+  float:left;
+  width:50%;
+}
+#game-like {
+  position:absolute;
+  width:98%;
+  top:94%;
+  left:10%;
+}
