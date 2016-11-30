@@ -26,7 +26,7 @@ var Motion = {
 
     var timeElapsed = game.time - game.motion.startTime;
 
-    return -0.5*g*(timeElapsed)**2 + (0.5*g*T - (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*s))/T +
+    return -0.5*g*Math.pow(timeElapsed, 2) + (0.5*g*T - (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*s))/T +
       (Geometry.GROUND_HEIGHT + Geometry.MARKER_HEIGHT + (h*r))/T)*timeElapsed + (Geometry.MARKER_HEIGHT + Geometry.GROUND_HEIGHT + h*s);
   },
 

@@ -115,8 +115,9 @@ $(function() {
   $(".gameplay").hide();
   $(".begin").click(function() {
     var isChrome = !!window.chrome && !!window.chrome.webstore;
-    if(!isChrome) {
-      $("#status").text("This game is only supported on Google Chrome for now.");
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0 || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
+    if(!isChrome && !isSafari) {
+      $("#status").text("This game is only supported on Google Chrome and Safari for now.");
     }
     else {
       $("#explanation").remove();
