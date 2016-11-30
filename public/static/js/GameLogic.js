@@ -53,6 +53,7 @@ var newGame = function() {
   }
 
   var switchHandler = function(e) {
+    e.preventDefault();
     var currentIndex = game.stacks.indexOf(game.currentStack);
     if(e.keyCode == Key.LEFT_SELECT) {
       if(currentIndex > 0) {
