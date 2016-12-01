@@ -24,7 +24,7 @@ var DOM = {
   updateTweetBox: function(text) {
     $("#share").html('');
     $("#share").append(
-      $("<a href='https://twitter.com/share' class='twitter-share-button' data-size='large' data-text='" + text + "' data-url='http://stacks.amizrahi.com' data-hashtags='StacksGame' data-show-count='false'>Tweet</a><script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
+      $("<a href='https://twitter.com/share' class='twitter-share-button' data-size='large' data-text='" + text + "' data-url='http://stacks.amizrahi.com' data-show-count='false'>Tweet</a><script async src='//platform.twitter.com/widgets.js' charset='utf-8'></script>")
     )
   },
 

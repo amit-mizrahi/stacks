@@ -98,9 +98,13 @@ footer {
 }
 #game-like {
   position:absolute;
-  width:98%;
   top:94%;
   left:10%;
+}
+#share {
+  position:absolute;
+  top:94%;
+  left:30%;
 }
 #status {
   color:#880000;
