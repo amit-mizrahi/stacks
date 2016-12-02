@@ -46,8 +46,8 @@ var State = {
 var Time = {
   CANCELLATION_TIME: 20,
   RANDOM_TIME_THRESHOLD: 1e-3,
-  DEFAULT_MIN_TIME: 100,
-  MINIMUM_MIN_TIME: 10
+  DEFAULT_MIN_TIME: 1000,
+  MINIMUM_MIN_TIME: 300
 };
 
 var setupGeometry = function(canvasWidth, canvasHeight) {
