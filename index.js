@@ -4,7 +4,7 @@ var path = require('path');
 var app = express();
 
 app.engine('.html', require('ejs').renderFile);
-app.use(express.static(path.join(__dirname, '/public')));
+app.use('/static',express.static('static'));
 app.use(require('body-parser').urlencoded({extended: false}));
 
 app.get('/', function(req, res) {
