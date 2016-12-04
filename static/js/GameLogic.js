@@ -117,8 +117,8 @@ $(function() {
     var isChrome = !!window.chrome && !!window.chrome.webstore;
     var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0 || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || safari.pushNotification);
     var mobile = /Mobi/.test(navigator.userAgent);
-    if((!isChrome && !isSafari) || mobile) {
-      $("#status").text("This game is only supported on Google Chrome and Safari for now. Mobile version coming soon.");
+    if(mobile) {
+      $("#status").text("Mobile version coming soon.");
     }
     else {
       $("#explanation").remove();
